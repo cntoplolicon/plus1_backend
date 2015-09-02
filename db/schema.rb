@@ -11,20 +11,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150902022101) do
+ActiveRecord::Schema.define(version: 20150902075902) do
 
-  create_table "users", force: :cascade do |t|
-    t.string  "username",        limit: 255
-    t.string  "nickname",        limit: 255
-    t.string  "password_digest", limit: 255
-    t.string  "avatar",          limit: 255
-    t.string  "biography",       limit: 255
-    t.integer "gender",          limit: 4
-    t.integer "can_infect",      limit: 4
-    t.integer "infection_index", limit: 4
+  create_table "user_security_codes", force: :cascade do |t|
+    t.string   "username",      limit: 48
+    t.string   "security_code", limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
-  add_index "users", ["nickname"], name: "index_users_on_nickname", length: {"nickname"=>191}, using: :btree
-  add_index "users", ["username"], name: "index_users_on_username", length: {"username"=>191}, using: :btree
+  add_index "user_security_codes", ["username"], name: "index_user_security_codes_on_username", unique: true, using: :btree
+
+  create_table "users", force: :cascade do |t|
+    t.string   "username",        limit: 48
+    t.string   "nickname",        limit: 48
+    t.string   "password_digest", limit: 255
+    t.string   "avatar",          limit: 255
+    t.string   "biography",       limit: 255
+    t.integer  "gender",          limit: 4
+    t.integer  "can_infect",      limit: 4,   default: 0, null: false
+    t.integer  "infection_index", limit: 4,   default: 0, null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+  end
+
+  add_index "users", ["nickname"], name: "index_users_on_nickname", using: :btree
+  add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
 end

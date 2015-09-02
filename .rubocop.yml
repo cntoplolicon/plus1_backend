@@ -1,2 +1,11 @@
 Style/Documentation:
     Enabled: false
+
+Style/LineLength:
+    Max: 120
+
+Style/MethodLength:
+    Max: 50
+
+Style/SpaceInsideHashLiteralBraces:
+    EnforcedStyle: no_space
