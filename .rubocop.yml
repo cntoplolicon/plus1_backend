@@ -9,3 +9,6 @@ Style/MethodLength:
 
 Style/SpaceInsideHashLiteralBraces:
     EnforcedStyle: no_space
+
+Metrics/AbcSize:
+    Max: 24

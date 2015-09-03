@@ -3,6 +3,7 @@ class CreateUserSecurityCodes < ActiveRecord::Migration
     create_table :user_security_codes do |t|
       t.string :username, limit: 48
       t.string :security_code
+      t.boolean :verified, null: false, default: false
       t.timestamps null: false
     end
     add_index :user_security_codes, :username, unique: true

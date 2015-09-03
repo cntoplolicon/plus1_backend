@@ -16,8 +16,9 @@ ActiveRecord::Schema.define(version: 20150902075902) do
   create_table "user_security_codes", force: :cascade do |t|
     t.string   "username",      limit: 48
     t.string   "security_code", limit: 255
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.boolean  "verified",                  default: false, null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
   end
 
   add_index "user_security_codes", ["username"], name: "index_user_security_codes_on_username", unique: true, using: :btree
