@@ -15,10 +15,19 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     arel (6.0.3)
+    aws-sdk (2.1.11)
+      aws-sdk-resources (= 2.1.11)
+    aws-sdk-core (2.1.11)
+      jmespath (~> 1.0)
+    aws-sdk-resources (2.1.11)
+      aws-sdk-core (= 2.1.11)
     backports (3.6.6)
     bcrypt (3.1.10)
     builder (3.2.2)
+    byebug (6.0.2)
     i18n (0.7.0)
+    jmespath (1.0.2)
+      multi_json (~> 1.0)
     json (1.8.3)
     minitest (5.8.0)
     multi_json (1.11.2)
@@ -52,7 +61,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aws-sdk (~> 2)
   bcrypt
+  byebug
   mysql2
   rake
   sinatra
