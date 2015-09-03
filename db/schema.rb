@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150902075902) do
+ActiveRecord::Schema.define(version: 20150903082637) do
 
   create_table "user_security_codes", force: :cascade do |t|
     t.string   "username",      limit: 48
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20150902075902) do
     t.integer  "infection_index", limit: 4,   default: 0, null: false
     t.datetime "created_at",                              null: false
     t.datetime "updated_at",                              null: false
+    t.string   "access_token",    limit: 48
   end
 
   add_index "users", ["nickname"], name: "index_users_on_nickname", using: :btree

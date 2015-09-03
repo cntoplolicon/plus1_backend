@@ -30,6 +30,17 @@ def confirm_username_verified(username)
   user_security_code
 end
 
+def generate_access_token
+  SecureRandom.hex
+end
+
+before '/users/:user_id' do
+  user_id = params[:user_id]
+  return unless user_id =~ /\A\d+\Z/
+  user = User.find(user_id)
+  halt 403 if params[:access_token] != user.access_token
+end
+
 post '/users' do
   user = User.new(can_infect: 4)
   user.save(validate: false)
@@ -135,5 +146,14 @@ post '/signIn' do
     halt 400, json(errors: user.errors)
   end
 
-  200
+  user.update(access_token: generate_access_token)
+  content_type :json
+  user.to_json(only: [:id, :access_token])
+end
+
+get '/users/:user_id' do
+  user = User.find(params[:user_id])
+  content_type :json
+  user.to_json(except: [:password_digest, :password, :resetting_password,
+                        :access_token, :created_at, :updated_at])
 end
