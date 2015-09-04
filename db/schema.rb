@@ -11,7 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150904014421) do
+ActiveRecord::Schema.define(version: 20150904033545) do
+
+  create_table "active_infections", force: :cascade do |t|
+    t.integer "user_id",      limit: 4, null: false
+    t.integer "infection_id", limit: 4, null: false
+  end
+
+  add_index "active_infections", ["infection_id"], name: "index_active_infections_on_infection_id", using: :btree
+  add_index "active_infections", ["user_id"], name: "index_active_infections_on_user_id", using: :btree
+
+  create_table "infections", force: :cascade do |t|
+    t.integer "user_id", limit: 4, null: false
+    t.integer "post_id", limit: 4, null: false
+  end
+
+  add_index "infections", ["post_id"], name: "index_infections_on_post_id", using: :btree
+  add_index "infections", ["user_id"], name: "index_infections_on_user_id", using: :btree
 
   create_table "post_pages", force: :cascade do |t|
     t.integer "post_id", limit: 4,   null: false
@@ -21,6 +37,17 @@ ActiveRecord::Schema.define(version: 20150904014421) do
   end
 
   add_index "post_pages", ["post_id"], name: "index_post_pages_on_post_id", using: :btree
+
+  create_table "post_views", force: :cascade do |t|
+    t.integer "user_id",      limit: 4, null: false
+    t.integer "infection_id", limit: 4, null: false
+    t.integer "post_id",      limit: 4, null: false
+    t.integer "result",       limit: 4, null: false
+  end
+
+  add_index "post_views", ["infection_id"], name: "index_post_views_on_infection_id", using: :btree
+  add_index "post_views", ["post_id"], name: "index_post_views_on_post_id", using: :btree
+  add_index "post_views", ["user_id"], name: "index_post_views_on_user_id", using: :btree
 
   create_table "posts", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,             null: false
@@ -59,6 +86,13 @@ ActiveRecord::Schema.define(version: 20150904014421) do
   add_index "users", ["nickname"], name: "index_users_on_nickname", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
+  add_foreign_key "active_infections", "infections"
+  add_foreign_key "active_infections", "users"
+  add_foreign_key "infections", "posts"
+  add_foreign_key "infections", "users"
   add_foreign_key "post_pages", "posts"
+  add_foreign_key "post_views", "infections"
+  add_foreign_key "post_views", "posts"
+  add_foreign_key "post_views", "users"
   add_foreign_key "posts", "users"
 end
