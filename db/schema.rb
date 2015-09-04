@@ -11,7 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150903082637) do
+ActiveRecord::Schema.define(version: 20150904014421) do
+
+  create_table "post_pages", force: :cascade do |t|
+    t.integer "post_id", limit: 4,   null: false
+    t.integer "order",   limit: 4,   null: false
+    t.string  "image",   limit: 255
+    t.string  "text",    limit: 255
+  end
+
+  add_index "post_pages", ["post_id"], name: "index_post_pages_on_post_id", using: :btree
+
+  create_table "posts", force: :cascade do |t|
+    t.integer  "user_id",       limit: 4,             null: false
+    t.integer  "likes_no",      limit: 4, default: 0, null: false
+    t.integer  "comment_count", limit: 4, default: 0, null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+  end
+
+  add_index "posts", ["user_id"], name: "index_posts_on_user_id", using: :btree
 
   create_table "user_security_codes", force: :cascade do |t|
     t.string   "username",      limit: 48
@@ -40,4 +59,6 @@ ActiveRecord::Schema.define(version: 20150903082637) do
   add_index "users", ["nickname"], name: "index_users_on_nickname", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
+  add_foreign_key "post_pages", "posts"
+  add_foreign_key "posts", "users"
 end

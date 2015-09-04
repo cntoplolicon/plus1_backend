@@ -13,6 +13,8 @@ class User < ActiveRecord::Base
   validates_format_of :password, with: /\A[ -~]{6,20}\z/, if: :resetting_password
   validates_presence_of :nickname, :can_infect, :infection_index
 
+  has_many :posts, -> { order :created_at }
+
   def authenticate(password)
     ::BCrypt::Password.new(password_digest) == password
   end

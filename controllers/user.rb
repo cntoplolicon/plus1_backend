@@ -34,11 +34,19 @@ def generate_access_token
   SecureRandom.hex
 end
 
-before '/users/:user_id' do
+def validate_access_token
   user_id = params[:user_id]
   return unless user_id =~ /\A\d+\Z/
-  user = User.find(user_id)
-  halt 403 if params[:access_token] != user.access_token
+  @user = User.find(user_id)
+  halt 403 if params[:access_token] != @user.access_token
+end
+
+before '/users/:user_id' do
+  validate_access_token
+end
+
+before '/users/:user_id/*' do
+  validate_access_token
 end
 
 post '/users' do
@@ -152,8 +160,7 @@ post '/signIn' do
 end
 
 get '/users/:user_id' do
-  user = User.find(params[:user_id])
   content_type :json
-  user.to_json(except: [:password_digest, :password, :resetting_password,
-                        :access_token, :created_at, :updated_at])
+  @user.to_json(except: [:password_digest, :password, :resetting_password,
+                         :access_token, :created_at, :updated_at])
 end
