@@ -64,7 +64,7 @@ post '/security_codes/account' do
   user = User.find_by_username(username)
   if user
     user.errors.add(:username, 'already exists')
-    halt 400, json(errors: user.errors)
+    halt 409, json(errors: user.errors)
   end
 
   send_security_code(username)
@@ -162,5 +162,5 @@ end
 get '/users/:user_id' do
   content_type :json
   @user.to_json(except: [:password_digest, :password, :resetting_password,
-                         :access_token, :created_at, :updated_at])
+                         :access_token])
 end

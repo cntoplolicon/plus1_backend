@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
   validates_presence_of :nickname, :can_infect, :infection_index
 
   has_many :posts, -> { order :created_at }
-  has_many :infections, -> { order :created_at }
+  has_many :infections
   has_many :active_infections, -> { order :created_at }
 
   def authenticate(password)

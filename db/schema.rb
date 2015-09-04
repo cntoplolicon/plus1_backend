@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150904033545) do
+ActiveRecord::Schema.define(version: 20150904091956) do
 
   create_table "active_infections", force: :cascade do |t|
     t.integer "user_id",      limit: 4, null: false
@@ -22,11 +22,13 @@ ActiveRecord::Schema.define(version: 20150904033545) do
   add_index "active_infections", ["user_id"], name: "index_active_infections_on_user_id", using: :btree
 
   create_table "infections", force: :cascade do |t|
-    t.integer "user_id", limit: 4, null: false
-    t.integer "post_id", limit: 4, null: false
+    t.integer "user_id",      limit: 4, null: false
+    t.integer "post_id",      limit: 4, null: false
+    t.integer "post_view_id", limit: 4
   end
 
   add_index "infections", ["post_id"], name: "index_infections_on_post_id", using: :btree
+  add_index "infections", ["post_view_id"], name: "index_infections_on_post_view_id", using: :btree
   add_index "infections", ["user_id"], name: "index_infections_on_user_id", using: :btree
 
   create_table "post_pages", force: :cascade do |t|
@@ -42,7 +44,7 @@ ActiveRecord::Schema.define(version: 20150904033545) do
     t.integer "user_id",      limit: 4, null: false
     t.integer "infection_id", limit: 4, null: false
     t.integer "post_id",      limit: 4, null: false
-    t.integer "result",       limit: 4, null: false
+    t.integer "result",       limit: 4
   end
 
   add_index "post_views", ["infection_id"], name: "index_post_views_on_infection_id", using: :btree
@@ -51,7 +53,7 @@ ActiveRecord::Schema.define(version: 20150904033545) do
 
   create_table "posts", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,             null: false
-    t.integer  "likes_no",      limit: 4, default: 0, null: false
+    t.integer  "likes_count",   limit: 4, default: 0, null: false
     t.integer  "comment_count", limit: 4, default: 0, null: false
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
@@ -88,6 +90,7 @@ ActiveRecord::Schema.define(version: 20150904033545) do
 
   add_foreign_key "active_infections", "infections"
   add_foreign_key "active_infections", "users"
+  add_foreign_key "infections", "post_views"
   add_foreign_key "infections", "posts"
   add_foreign_key "infections", "users"
   add_foreign_key "post_pages", "posts"

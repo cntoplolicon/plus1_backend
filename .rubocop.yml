@@ -12,3 +12,6 @@ Style/SpaceInsideHashLiteralBraces:
 
 Metrics/AbcSize:
     Max: 24
+
+Style/MultilineOperationIndentation:
+    Enabled: false
