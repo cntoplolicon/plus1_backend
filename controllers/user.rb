@@ -41,12 +41,8 @@ def validate_access_token
   halt 403 if params[:access_token] != @user.access_token
 end
 
-before '/users/:user_id' do
-  validate_access_token
-end
-
-before '/users/:user_id/*' do
-  validate_access_token
+before do
+  validate_access_token if params[:user_id]
 end
 
 post '/users' do

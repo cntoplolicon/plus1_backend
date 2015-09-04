@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150904091956) do
+ActiveRecord::Schema.define(version: 20150904105925) do
 
   create_table "active_infections", force: :cascade do |t|
     t.integer "user_id",      limit: 4, null: false
@@ -20,6 +20,18 @@ ActiveRecord::Schema.define(version: 20150904091956) do
 
   add_index "active_infections", ["infection_id"], name: "index_active_infections_on_infection_id", using: :btree
   add_index "active_infections", ["user_id"], name: "index_active_infections_on_user_id", using: :btree
+
+  create_table "comments", force: :cascade do |t|
+    t.integer "post_id",         limit: 4, null: false
+    t.integer "user_id",         limit: 4, null: false
+    t.integer "reply_to_id",     limit: 4
+    t.integer "root_comment_id", limit: 4
+  end
+
+  add_index "comments", ["post_id"], name: "index_comments_on_post_id", using: :btree
+  add_index "comments", ["reply_to_id"], name: "index_comments_on_reply_to_id", using: :btree
+  add_index "comments", ["root_comment_id"], name: "index_comments_on_root_comment_id", using: :btree
+  add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "infections", force: :cascade do |t|
     t.integer "user_id",      limit: 4, null: false
@@ -30,6 +42,14 @@ ActiveRecord::Schema.define(version: 20150904091956) do
   add_index "infections", ["post_id"], name: "index_infections_on_post_id", using: :btree
   add_index "infections", ["post_view_id"], name: "index_infections_on_post_view_id", using: :btree
   add_index "infections", ["user_id"], name: "index_infections_on_user_id", using: :btree
+
+  create_table "likes", force: :cascade do |t|
+    t.integer "post_id", limit: 4, null: false
+    t.integer "user_id", limit: 4, null: false
+  end
+
+  add_index "likes", ["post_id"], name: "index_likes_on_post_id", using: :btree
+  add_index "likes", ["user_id"], name: "index_likes_on_user_id", using: :btree
 
   create_table "post_pages", force: :cascade do |t|
     t.integer "post_id", limit: 4,   null: false
@@ -90,9 +110,15 @@ ActiveRecord::Schema.define(version: 20150904091956) do
 
   add_foreign_key "active_infections", "infections"
   add_foreign_key "active_infections", "users"
+  add_foreign_key "comments", "comments", column: "reply_to_id"
+  add_foreign_key "comments", "comments", column: "root_comment_id"
+  add_foreign_key "comments", "posts"
+  add_foreign_key "comments", "users"
   add_foreign_key "infections", "post_views"
   add_foreign_key "infections", "posts"
   add_foreign_key "infections", "users"
+  add_foreign_key "likes", "posts"
+  add_foreign_key "likes", "users"
   add_foreign_key "post_pages", "posts"
   add_foreign_key "post_views", "infections"
   add_foreign_key "post_views", "posts"
