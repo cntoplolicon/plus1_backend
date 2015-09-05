@@ -4,13 +4,16 @@ post '/posts/:post_id/comments' do
   content = params[:content]
   halt 400 unless content
 
-  post = Post.find(params[:post_id])
-  comment_params = {user_id: @user.id, content: content}
-  if reply_to
-    comment_params[:reply_to_id] = reply_to.id
-    comment_params[:root_comment_id] = reply_to.root_comment_id || reply_to.id
+  Post.transaction do
+    post = Post.find(params[:post_id])
+    comment_params = {user_id: @user.id, content: content}
+    if reply_to
+      comment_params[:reply_to_id] = reply_to.id
+      comment_params[:root_comment_id] = reply_to.root_comment_id || reply_to.id
+    end
+    post.comments.create(comment_params)
+    Post.where(id: post.id).update_all('comment_count = comment_count + 1')
   end
-  post.comments.create(comment_params)
   200
 end
 

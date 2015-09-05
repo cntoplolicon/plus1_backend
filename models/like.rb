@@ -1,4 +1,4 @@
-class Post < ActiveRecord::Base
+class Like < ActiveRecord::Base
   belongs_to :post
   belongs_to :user
 end
