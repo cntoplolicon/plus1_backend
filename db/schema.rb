@@ -22,10 +22,11 @@ ActiveRecord::Schema.define(version: 20150904105925) do
   add_index "active_infections", ["user_id"], name: "index_active_infections_on_user_id", using: :btree
 
   create_table "comments", force: :cascade do |t|
-    t.integer "post_id",         limit: 4, null: false
-    t.integer "user_id",         limit: 4, null: false
+    t.integer "post_id",         limit: 4,   null: false
+    t.integer "user_id",         limit: 4,   null: false
     t.integer "reply_to_id",     limit: 4
     t.integer "root_comment_id", limit: 4
+    t.string  "content",         limit: 255, null: false
   end
 
   add_index "comments", ["post_id"], name: "index_comments_on_post_id", using: :btree

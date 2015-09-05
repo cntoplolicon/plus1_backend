@@ -41,10 +41,6 @@ def validate_access_token
   halt 403 if params[:access_token] != @user.access_token
 end
 
-before do
-  validate_access_token if params[:user_id]
-end
-
 post '/users' do
   user = User.new(can_infect: 4)
   user.save(validate: false)
@@ -156,6 +152,7 @@ post '/signIn' do
 end
 
 get '/users/:user_id' do
+  validate_access_token
   content_type :json
   @user.to_json(except: [:password_digest, :password, :resetting_password,
                          :access_token])

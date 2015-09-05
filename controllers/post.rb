@@ -1,6 +1,7 @@
 post '/users/:user_id/posts' do
-  post = @user.posts.build
+  validate_access_token
 
+  post = @user.posts.build
   params[:post_pages].each_with_index do |post_page, i|
     post_page = post_page.deep_symbolize_keys
     image = upload_file_to_s3(post_page[:image]) if post_page[:image]
@@ -29,12 +30,14 @@ post '/users/:user_id/posts' do
 end
 
 get '/users/:user_id/posts' do
+  validate_access_token
   posts = Post.where(user_id: @user.id).joins(:post_pages).includes(:post_pages)
   content_type :json
   posts.to_json(except: :updated_at, include: :post_pages)
 end
 
 post '/users/:user_id/infections/:infection_id/post_view' do
+  validate_access_token
   ActiveRecord::Base.transaction do
     infection = @user.infections.find(params[:infection_id])
     halt 409 if infection.post_view
@@ -68,10 +71,10 @@ post '/users/:user_id/infections/:infection_id/post_view' do
 end
 
 get '/users/:user_id/infections/active' do
+  validate_access_token
   infections = Infection.joins(:active_infection).includes(:active_infection)
     .where(active_infections: {user_id: @user.id})
     .joins(post: :user).includes(post: [:user, :post_pages])
   content_type :json
-  user_cridential_columns = [:password_digest, :password, :resetting_password, :access_token]
-  infections.to_json(include: {post: {include: {user: {except: user_cridential_columns}, post_pages: {}}}})
+  infections.to_json(include: {post: {include: {user: {only: [:id, :nickname]}, post_pages: {}}}})
 end

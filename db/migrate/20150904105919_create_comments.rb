@@ -5,6 +5,7 @@ class CreateComments < ActiveRecord::Migration
       t.references :user, null: false, index: true, foreign_key: true
       t.integer :reply_to_id
       t.integer :root_comment_id
+      t.string :content, null: false
     end
     add_index :comments, :reply_to_id
     add_index :comments, :root_comment_id
