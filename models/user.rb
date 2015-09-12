@@ -1,13 +1,16 @@
 require 'bcrypt'
 
 class User < ActiveRecord::Base
+  GENDER_UNKNOWN = 0
+  GENDER_MALE = 1
+  GENDER_FEMALE = 2
+
   attr_accessor :resetting_password
   attr_reader :password
 
   has_secure_password validations: false
 
   validates_presence_of :username
-  validates_uniqueness_of :username
   validates_format_of :username, with: /\A\d{11}\z/
   validates_presence_of :password, if: :resetting_password
   validates_format_of :password, with: /\A[ -~]{6,20}\z/, if: :resetting_password
