@@ -2,11 +2,7 @@ def send_sms_message(mobile, msg)
   uri = URI('http://222.73.117.158/msg/HttpBatchSendSM')
   params = {account: settings.sms[:username], pswd: settings.sms[:password], mobile: mobile, msg: msg}
   uri.query = URI.encode_www_form(params)
-  if Sinatra::Base.development?
-    p "sms message: #{msg}"
-  else
-    Net::HTTP.get(uri)
-  end
+  Net::HTTP.get(uri)
 end
 
 def generate_security_code
@@ -107,6 +103,7 @@ put '/users/password' do
 end
 
 put '/users/:user_id' do
+  validate_access_token
   user = User.find(params[:user_id])
   temp_user = !user.username
   user.resetting_password = temp_user || params[:password]

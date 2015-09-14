@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150905062844) do
+ActiveRecord::Schema.define(version: 20150914072930) do
 
   create_table "active_infections", force: :cascade do |t|
     t.integer "user_id",      limit: 4, null: false
@@ -98,7 +98,7 @@ ActiveRecord::Schema.define(version: 20150905062844) do
     t.string   "password_digest", limit: 255
     t.string   "avatar",          limit: 255
     t.string   "biography",       limit: 255
-    t.integer  "gender",          limit: 4
+    t.integer  "gender",          limit: 4,   default: 0, null: false
     t.integer  "can_infect",      limit: 4,   default: 0, null: false
     t.integer  "infection_index", limit: 4,   default: 0, null: false
     t.datetime "created_at",                              null: false
