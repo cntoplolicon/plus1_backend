@@ -2,7 +2,8 @@ def send_sms_message(mobile, msg)
   uri = URI('http://222.73.117.158/msg/HttpBatchSendSM')
   params = {account: settings.sms[:username], pswd: settings.sms[:password], mobile: mobile, msg: msg}
   uri.query = URI.encode_www_form(params)
-  Net::HTTP.get(uri)
+  Net::HTTP.get(uri) if Sinatra::Base.production?
+  p msg if Sinatra::Base.development?
 end
 
 def generate_security_code
@@ -15,6 +16,7 @@ def send_security_code(username)
   user_security_code = UserSecurityCode.where(username: username).first_or_initialize
   user_security_code.update_attributes(username: username, security_code: security_code, verified: false)
   user_security_code.save(validate: false)
+  security_code
 end
 
 def confirm_username_verified(username)
@@ -55,8 +57,12 @@ post '/security_codes/account' do
     halt 409, json(errors: user.errors)
   end
 
-  send_security_code(username)
-  json(status: 'success')
+  security_code = send_security_code(username)
+  if Sinatra::Base.development?
+    json(security_code: security_code)
+  else
+    json(status: 'success')
+  end
 end
 
 post '/security_codes/password' do
@@ -70,8 +76,12 @@ post '/security_codes/password' do
     halt 400, json(errors: user.errors)
   end
 
-  send_security_code(username)
-  json(status: 'success')
+  security_code = send_security_code(username)
+  if Sinatra::Base.development?
+    json(security_code: security_code)
+  else
+    json(status: 'success')
+  end
 end
 
 post '/security_codes/verify' do

@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
   validates_format_of :username, with: /\A\d{11}\z/
   validates_presence_of :password, if: :resetting_password
   validates_format_of :password, with: /\A[ -~]{6,20}\z/, if: :resetting_password
-  validates_presence_of :nickname, :can_infect, :infection_index
+  validates_presence_of :nickname
 
   has_many :posts, -> { order :created_at }
   has_many :infections
