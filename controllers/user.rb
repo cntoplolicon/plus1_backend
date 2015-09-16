@@ -113,8 +113,13 @@ put '/users/password' do
 end
 
 put '/users/:user_id' do
-  validate_access_token
-  user = User.find(params[:user_id])
+  user_id = params[:user_id]
+  if user_id == 'new'
+    user = User.new(can_infect: 4, access_token: generate_access_token)
+  else
+    validate_access_token
+    user = User.find(user_id)
+  end
   temp_user = !user.username
   user.resetting_password = temp_user || params[:password]
   user_params = params.deep_symbolize_keys.slice(:username, :password, :nickname, :gender)
