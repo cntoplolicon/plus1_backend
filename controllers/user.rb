@@ -149,7 +149,7 @@ put '/users/:user_id' do
   update_user_attributes(user)
 
   content_type :json
-  json(status: 'success')
+  user_info_without_credentials(user)
 end
 
 post '/sign_in' do
