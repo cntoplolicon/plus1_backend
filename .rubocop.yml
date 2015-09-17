@@ -11,7 +11,13 @@ Style/SpaceInsideHashLiteralBraces:
     EnforcedStyle: no_space
 
 Metrics/AbcSize:
-    Max: 24
+    Enabled: false
+
+Style/CyclomaticComplexity:
+    Enabled: false
+
+Metrics/PerceivedComplexity:
+    Enabled: false
 
 Style/MultilineOperationIndentation:
     Enabled: false

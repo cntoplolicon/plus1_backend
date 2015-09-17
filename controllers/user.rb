@@ -39,12 +39,44 @@ def validate_access_token
   halt 403 if params[:access_token] != @user.access_token
 end
 
+def user_info_without_credentials(user)
+  user.to_json(except: [:password, :password_digest, :resetting_password])
+end
+
+def update_user_attributes(user)
+  user.resetting_password = !user.id || params[:password]
+
+  username = params[:username]
+  if username && User.where(username: username).count > 0
+    user.errors.add(:username, 'duplicated')
+    halt 400, json(errors: user.errors)
+  end
+
+  user_security_code = confirm_username_verified(username) if username
+  if params[:password] && user.id
+    old_password = params[:old_password]
+    unless user.authenticate(old_password)
+      user.errors.add(:old_password, 'incorrect')
+      halt 400, json(errors: user.errors)
+    end
+  end
+
+  user_params = params.deep_symbolize_keys.slice(:username, :password, :nickname, :gender)
+  user.attributes = user_params
+  user.avatar = upload_file_to_s3(params[:avatar]) if params[:avatar]
+
+  User.transaction do
+    halt 400, json(errors: user.errors) unless user.save
+    user_security_code.destroy if user_security_code
+  end
+end
+
 post '/users' do
   user = User.new(can_infect: 4, access_token: generate_access_token)
-  user.save(validate: false)
+  update_user_attributes(user)
 
   content_type :json
-  return 201, user.to_json(only: [:id, :access_token])
+  return 201, user_info_without_credentials(user)
 end
 
 post '/security_codes/account' do
@@ -113,43 +145,14 @@ put '/users/password' do
 end
 
 put '/users/:user_id' do
-  user_id = params[:user_id]
-  if user_id == 'new'
-    user = User.new(can_infect: 4, access_token: generate_access_token)
-  else
-    validate_access_token
-    user = User.find(user_id)
-  end
-  temp_user = !user.username
-  user.resetting_password = temp_user || params[:password]
-  user_params = params.deep_symbolize_keys.slice(:username, :password, :nickname, :gender)
-
-  username = params[:username]
-  if username && User.where(username: username).count > 0
-    user.errors.add(:username, 'duplicated')
-    halt 400, json(errors: user.errors)
-  end
-
-  user_security_code = confirm_username_verified(username) if username
-  password = params[:password]
-  if password && !temp_user
-    old_password = params[:old_password]
-    unless user.authenticate(old_password)
-      user.errors.add(:old_password, 'incorrect')
-      halt 400, json(errors: user.errors)
-    end
-  end
-
-  user.attributes = user_params
-  user.avatar = upload_file_to_s3(params[:avatar]) if params[:avatar]
-  halt 400, json(errors: user.errors) unless user.save
-  user_security_code.destroy if user_security_code
+  user = User.find(params[:user_id])
+  update_user_attributes(user)
 
   content_type :json
-  user.to_json(except: [:password, :password_digest, :resetting_password])
+  json(status: 'success')
 end
 
-post '/signIn' do
+post '/sign_in' do
   username = params[:username]
   password = params[:password]
   halt 400 unless username && password
@@ -167,7 +170,14 @@ post '/signIn' do
 
   user.update(access_token: generate_access_token)
   content_type :json
-  user.to_json(except: [:password, :password_digest, :resetting_password])
+  user_info_without_credentials(user)
+end
+
+post '/users/:user_id/sign_out' do
+  validate_access_token
+  @user.update(access_token: nil)
+  content_type :json
+  json(status: 'success')
 end
 
 get '/users/:user_id' do
