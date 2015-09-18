@@ -61,7 +61,7 @@ def update_user_attributes(user)
     end
   end
 
-  user_params = params.deep_symbolize_keys.slice(:username, :password, :nickname, :gender)
+  user_params = params.deep_symbolize_keys.slice(:username, :password, :nickname, :gender, :biography)
   user.attributes = user_params
   user.avatar = upload_file_to_s3(params[:avatar]) if params[:avatar]
 
