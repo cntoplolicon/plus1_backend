@@ -26,7 +26,7 @@ post '/users/:user_id/posts' do
     ActiveInfection.create(new_active_infections_params)
   end
 
-  200
+  json(status: 'success')
 end
 
 get '/users/:user_id/posts' do
@@ -67,7 +67,8 @@ post '/users/:user_id/infections/:infection_id/post_view' do
       ActiveInfection.create(new_active_infections_params)
     end
   end
-  200
+
+  json(status: 'success')
 end
 
 get '/users/:user_id/infections/active' do
