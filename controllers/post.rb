@@ -75,7 +75,8 @@ get '/users/:user_id/infections/active' do
   validate_access_token
   infections = Infection.joins(:active_infection).includes(:active_infection)
     .where(active_infections: {user_id: @user.id})
-    .joins(post: :user).includes(post: [:user, :post_pages])
+    .joins(post: :user).includes(post: [:user, :post_pages]).order(:id).limit(100)
+
   content_type :json
   infections.to_json(include: {post: {include: {user: {only: [:id, :nickname]}, post_pages: {}}}})
 end
