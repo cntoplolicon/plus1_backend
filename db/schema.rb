@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150914072930) do
+ActiveRecord::Schema.define(version: 20150925035155) do
 
   create_table "active_infections", force: :cascade do |t|
     t.integer "user_id",      limit: 4, null: false
@@ -44,14 +44,6 @@ ActiveRecord::Schema.define(version: 20150914072930) do
   add_index "infections", ["post_view_id"], name: "index_infections_on_post_view_id", using: :btree
   add_index "infections", ["user_id"], name: "index_infections_on_user_id", using: :btree
 
-  create_table "likes", force: :cascade do |t|
-    t.integer "post_id", limit: 4, null: false
-    t.integer "user_id", limit: 4, null: false
-  end
-
-  add_index "likes", ["post_id"], name: "index_likes_on_post_id", using: :btree
-  add_index "likes", ["user_id"], name: "index_likes_on_user_id", using: :btree
-
   create_table "post_pages", force: :cascade do |t|
     t.integer "post_id", limit: 4,   null: false
     t.integer "order",   limit: 4,   null: false
@@ -74,10 +66,11 @@ ActiveRecord::Schema.define(version: 20150914072930) do
 
   create_table "posts", force: :cascade do |t|
     t.integer  "user_id",        limit: 4,             null: false
-    t.integer  "likes_count",    limit: 4, default: 0, null: false
     t.integer  "comments_count", limit: 4, default: 0, null: false
     t.datetime "created_at",                           null: false
     t.datetime "updated_at",                           null: false
+    t.integer  "views_count",    limit: 4, default: 0, null: false
+    t.integer  "spreads_count",  limit: 4, default: 0, null: false
   end
 
   add_index "posts", ["user_id"], name: "index_posts_on_user_id", using: :btree
@@ -118,8 +111,6 @@ ActiveRecord::Schema.define(version: 20150914072930) do
   add_foreign_key "infections", "post_views"
   add_foreign_key "infections", "posts"
   add_foreign_key "infections", "users"
-  add_foreign_key "likes", "posts"
-  add_foreign_key "likes", "users"
   add_foreign_key "post_pages", "posts"
   add_foreign_key "post_views", "infections"
   add_foreign_key "post_views", "posts"

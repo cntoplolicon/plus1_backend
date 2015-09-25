@@ -39,7 +39,7 @@ def validate_access_token
   halt 403 if params[:access_token] != @user.access_token
 end
 
-def user_info_without_credentials(user)
+def user_info_without_passwords(user)
   user.to_json(except: [:password, :password_digest, :resetting_password])
 end
 
@@ -76,7 +76,7 @@ post '/users' do
   update_user_attributes(user)
 
   content_type :json
-  return 201, user_info_without_credentials(user)
+  return 201, user_info_without_passwords(user)
 end
 
 post '/security_codes/account' do
@@ -149,7 +149,7 @@ put '/users/:user_id' do
   update_user_attributes(user)
 
   content_type :json
-  user_info_without_credentials(user)
+  user_info_without_passwords(user)
 end
 
 post '/sign_in' do
@@ -170,7 +170,7 @@ post '/sign_in' do
 
   user.update(access_token: generate_access_token)
   content_type :json
-  user_info_without_credentials(user)
+  user_info_without_passwords(user)
 end
 
 post '/users/:user_id/sign_out' do

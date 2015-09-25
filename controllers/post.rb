@@ -50,6 +50,7 @@ post '/users/:user_id/infections/:infection_id/post_view' do
 
     active_infection.destroy
     post_view = infection.create_post_view(user_id: @user.id, post_id: infection.post_id, result: result)
+    Post.where(id: infection.post_id).update_all('views_count = views_count + 1')
 
     if post_view.result == PostView::SPREAD
       infected_user_ids = Infection.select(:user_id).where(post_id: post_view.post_id)
@@ -65,6 +66,8 @@ post '/users/:user_id/infections/:infection_id/post_view' do
         {user_id: new_infection.user_id, infection_id: new_infection.id}
       end
       ActiveInfection.create(new_active_infections_params)
+
+      Post.where(id: infection.post_id).update_all('spreads_count = spreads_count + 1')
     end
   end
 
@@ -78,5 +81,6 @@ get '/users/:user_id/infections/active' do
     .joins(post: :user).includes(post: [:user, :post_pages]).order(:id).limit(100)
 
   content_type :json
-  infections.to_json(include: {post: {include: {user: {only: [:id, :nickname]}, post_pages: {}}}})
+  confidential_user_attributes = [:password, :password_digest, :resetting_password, :access_token]
+  infections.to_json(include: {post: {include: {user: {except: confidential_user_attributes}, post_pages: {}}}})
 end
