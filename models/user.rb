@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   has_many :posts, -> { order :created_at }
   has_many :infections
   has_many :active_infections, -> { order :created_at }
+  has_many :bookmarks, -> { order :created_at }
 
   def authenticate(password)
     ::BCrypt::Password.new(password_digest) == password

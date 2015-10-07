@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150925035155) do
+ActiveRecord::Schema.define(version: 20151007012723) do
 
   create_table "active_infections", force: :cascade do |t|
     t.integer "user_id",      limit: 4, null: false
@@ -20,6 +20,17 @@ ActiveRecord::Schema.define(version: 20150925035155) do
 
   add_index "active_infections", ["infection_id"], name: "index_active_infections_on_infection_id", using: :btree
   add_index "active_infections", ["user_id"], name: "index_active_infections_on_user_id", using: :btree
+
+  create_table "bookmarks", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4, null: false
+    t.integer  "post_id",    limit: 4, null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "bookmarks", ["post_id"], name: "index_bookmarks_on_post_id", using: :btree
+  add_index "bookmarks", ["user_id", "post_id"], name: "index_bookmarks_on_user_id_and_post_id", unique: true, using: :btree
+  add_index "bookmarks", ["user_id"], name: "index_bookmarks_on_user_id", using: :btree
 
   create_table "comments", force: :cascade do |t|
     t.integer "post_id",         limit: 4,   null: false
@@ -104,6 +115,8 @@ ActiveRecord::Schema.define(version: 20150925035155) do
 
   add_foreign_key "active_infections", "infections"
   add_foreign_key "active_infections", "users"
+  add_foreign_key "bookmarks", "posts"
+  add_foreign_key "bookmarks", "users"
   add_foreign_key "comments", "comments", column: "reply_to_id"
   add_foreign_key "comments", "comments", column: "root_comment_id"
   add_foreign_key "comments", "posts"
