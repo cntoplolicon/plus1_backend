@@ -15,4 +15,4 @@ Aws.config.update(
 
 set :s3,
   bucket: 'infection-development',
-  host: 'infection-development.s3-website.cn-north-1.amazonaws.com.cn'
+  host: 'http://infection-development.s3-website.cn-north-1.amazonaws.com.cn/'
