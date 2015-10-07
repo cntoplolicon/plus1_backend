@@ -29,9 +29,9 @@ post '/users/:user_id/posts' do
   json(status: 'success')
 end
 
-get '/users/:user_id/posts' do
+get '/users/:author_id/posts' do
   validate_access_token
-  posts = Post.where(user_id: @user.id).joins(:post_pages).includes(:post_pages)
+  posts = Post.where(user_id: params[:author_id]).joins(:post_pages).includes(:post_pages)
   content_type :json
   posts.to_json(except: :updated_at, include: :post_pages)
 end
