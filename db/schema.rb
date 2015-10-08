@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151007012723) do
+ActiveRecord::Schema.define(version: 20151008004959) do
 
   create_table "active_infections", force: :cascade do |t|
     t.integer "user_id",      limit: 4, null: false
@@ -33,16 +33,16 @@ ActiveRecord::Schema.define(version: 20151007012723) do
   add_index "bookmarks", ["user_id"], name: "index_bookmarks_on_user_id", using: :btree
 
   create_table "comments", force: :cascade do |t|
-    t.integer "post_id",         limit: 4,   null: false
-    t.integer "user_id",         limit: 4,   null: false
-    t.integer "reply_to_id",     limit: 4
-    t.integer "root_comment_id", limit: 4
-    t.string  "content",         limit: 255, null: false
+    t.integer  "post_id",     limit: 4,   null: false
+    t.integer  "user_id",     limit: 4,   null: false
+    t.integer  "reply_to_id", limit: 4
+    t.string   "content",     limit: 255, null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   add_index "comments", ["post_id"], name: "index_comments_on_post_id", using: :btree
   add_index "comments", ["reply_to_id"], name: "index_comments_on_reply_to_id", using: :btree
-  add_index "comments", ["root_comment_id"], name: "index_comments_on_root_comment_id", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "infections", force: :cascade do |t|
@@ -118,7 +118,6 @@ ActiveRecord::Schema.define(version: 20151007012723) do
   add_foreign_key "bookmarks", "posts"
   add_foreign_key "bookmarks", "users"
   add_foreign_key "comments", "comments", column: "reply_to_id"
-  add_foreign_key "comments", "comments", column: "root_comment_id"
   add_foreign_key "comments", "posts"
   add_foreign_key "comments", "users"
   add_foreign_key "infections", "post_views"

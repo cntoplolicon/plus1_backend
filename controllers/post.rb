@@ -94,10 +94,7 @@ post '/posts/:post_id/comments' do
   Post.transaction do
     post = Post.find(params[:post_id])
     comment_params = {user_id: @user.id, content: content}
-    if reply_to
-      comment_params[:reply_to_id] = reply_to.id
-      comment_params[:root_comment_id] = reply_to.root_comment_id || reply_to.id
-    end
+    comment_params[:reply_to_id] = reply_to.id if reply_to
     post.comments.create(comment_params)
     Post.where(id: post.id).update_all('comments_count = comments_count + 1')
 
@@ -108,17 +105,14 @@ post '/posts/:post_id/comments' do
   json(status: 'success')
 end
 
-get '/posts/:post_id/comments/hierachy' do
+get '/posts/:post_id/comments' do
   validate_access_token
   content_type :json
-  user_attributes = [:id, :nickname, :avatar]
-  root_comments = Comment.where(post_id: params[:post_id], root_comment_id: nil).includes(:discussions)
+  confidential_user_attributes = [:password, :password_digest, :resetting_password, :access_token]
+  comments = Comment.where(post_id: params[:post_id]).joins(:user).includes(:user).order(:created_at)
 
   content_type :json
-  root_comments.to_json(include:
-                        {user: {only: user_attributes},
-                         discussions: {include: {user: {only: user_attributes}}}
-  })
+  comments.to_json(include: {user: {except: confidential_user_attributes}})
 end
 
 post '/users/:user_id/bookmarks' do
