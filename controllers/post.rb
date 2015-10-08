@@ -16,14 +16,9 @@ post '/users/:user_id/posts' do
     new_user_ids = User.where.not(id: @user.id)
       .order('RAND()').limit(@user.can_infect).pluck(:id)
     new_infections_params = new_user_ids.map do |user_id|
-      {user_id: user_id, post_id: post.id}
+      {user_id: user_id, post_id: post.id, active: true}
     end
-    new_infections = Infection.create(new_infections_params)
-
-    new_active_infections_params = new_infections.map do |new_infection|
-      {user_id: new_infection.user_id, infection_id: new_infection.id}
-    end
-    ActiveInfection.create(new_active_infections_params)
+    Infection.create(new_infections_params)
   end
 
   json(status: 'success')
@@ -40,17 +35,14 @@ post '/users/:user_id/infections/:infection_id/post_view' do
   validate_access_token
   ActiveRecord::Base.transaction do
     infection = @user.infections.find(params[:infection_id])
-    halt 409 if infection.post_view
-
-    active_infection = infection.active_infection
-    halt 409 unless active_infection
+    halt 409 unless infection.active
 
     result = params[:result].to_i
     halt 400 unless [PostView::SPREAD, PostView::SKIP].include?(result)
 
-    active_infection.destroy
-    post_view = infection.create_post_view(user_id: @user.id, post_id: infection.post_id, result: result)
+    post_view = PostView.create(result: result, infection_id: infection.id)
     Post.where(id: infection.post_id).update_all('views_count = views_count + 1')
+    infection.update(active: false)
 
     if post_view.result == PostView::SPREAD
       infected_user_ids = Infection.select(:user_id).where(post_id: post_view.post_id)
@@ -58,14 +50,9 @@ post '/users/:user_id/infections/:infection_id/post_view' do
         .order('RAND()').limit(@user.can_infect).pluck(:id)
 
       new_infections_params = new_user_ids.map do |new_user_id|
-        {user_id: new_user_id, post_id: post_view.post_id, post_view_id: post_view.id}
+        {user_id: new_user_id, post_id: post_view.post_id, post_view_id: post_view.id, active: true}
       end
-      new_infections = Infection.create(new_infections_params)
-
-      new_active_infections_params = new_infections.map do |new_infection|
-        {user_id: new_infection.user_id, infection_id: new_infection.id}
-      end
-      ActiveInfection.create(new_active_infections_params)
+      Infection.create(new_infections_params)
 
       Post.where(id: infection.post_id).update_all('spreads_count = spreads_count + 1')
     end
@@ -76,8 +63,7 @@ end
 
 get '/users/:user_id/infections/active' do
   validate_access_token
-  infections = Infection.joins(:active_infection).includes(:active_infection)
-    .where(active_infections: {user_id: @user.id})
+  infections = Infection.where(user_id: @user.id, active: true)
     .joins(post: :user).includes(post: [:user, :post_pages]).order(:id).limit(100)
 
   content_type :json

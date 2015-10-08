@@ -11,15 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151008004959) do
-
-  create_table "active_infections", force: :cascade do |t|
-    t.integer "user_id",      limit: 4, null: false
-    t.integer "infection_id", limit: 4, null: false
-  end
-
-  add_index "active_infections", ["infection_id"], name: "index_active_infections_on_infection_id", using: :btree
-  add_index "active_infections", ["user_id"], name: "index_active_infections_on_user_id", using: :btree
+ActiveRecord::Schema.define(version: 20151008010816) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
@@ -46,9 +38,12 @@ ActiveRecord::Schema.define(version: 20151008004959) do
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "infections", force: :cascade do |t|
-    t.integer "user_id",      limit: 4, null: false
-    t.integer "post_id",      limit: 4, null: false
-    t.integer "post_view_id", limit: 4
+    t.integer  "user_id",      limit: 4,                 null: false
+    t.integer  "post_id",      limit: 4,                 null: false
+    t.integer  "post_view_id", limit: 4
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.boolean  "active",                 default: false, null: false
   end
 
   add_index "infections", ["post_id"], name: "index_infections_on_post_id", using: :btree
@@ -56,19 +51,23 @@ ActiveRecord::Schema.define(version: 20151008004959) do
   add_index "infections", ["user_id"], name: "index_infections_on_user_id", using: :btree
 
   create_table "post_pages", force: :cascade do |t|
-    t.integer "post_id", limit: 4,   null: false
-    t.integer "order",   limit: 4,   null: false
-    t.string  "image",   limit: 255
-    t.string  "text",    limit: 255
+    t.integer  "post_id",    limit: 4,   null: false
+    t.integer  "order",      limit: 4,   null: false
+    t.string   "image",      limit: 255
+    t.string   "text",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   add_index "post_pages", ["post_id"], name: "index_post_pages_on_post_id", using: :btree
 
   create_table "post_views", force: :cascade do |t|
-    t.integer "user_id",      limit: 4, null: false
-    t.integer "infection_id", limit: 4, null: false
-    t.integer "post_id",      limit: 4, null: false
-    t.integer "result",       limit: 4
+    t.integer  "user_id",      limit: 4, null: false
+    t.integer  "infection_id", limit: 4, null: false
+    t.integer  "post_id",      limit: 4, null: false
+    t.integer  "result",       limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   add_index "post_views", ["infection_id"], name: "index_post_views_on_infection_id", using: :btree
@@ -113,8 +112,6 @@ ActiveRecord::Schema.define(version: 20151008004959) do
   add_index "users", ["nickname"], name: "index_users_on_nickname", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
-  add_foreign_key "active_infections", "infections"
-  add_foreign_key "active_infections", "users"
   add_foreign_key "bookmarks", "posts"
   add_foreign_key "bookmarks", "users"
   add_foreign_key "comments", "comments", column: "reply_to_id"
