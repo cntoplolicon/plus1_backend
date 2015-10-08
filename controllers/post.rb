@@ -45,12 +45,12 @@ post '/users/:user_id/infections/:infection_id/post_view' do
     infection.update(active: false)
 
     if post_view.result == PostView::SPREAD
-      infected_user_ids = Infection.select(:user_id).where(post_id: post_view.post_id)
-      new_user_ids = User.where.not(id: infected_user_ids).where.not(id: post_view.post.user_id)
+      infected_user_ids = Infection.select(:user_id).where(post_id: infection.post_id)
+      new_user_ids = User.where.not(id: infected_user_ids).where.not(id: infection.post.user_id)
         .order('RAND()').limit(@user.can_infect).pluck(:id)
 
       new_infections_params = new_user_ids.map do |new_user_id|
-        {user_id: new_user_id, post_id: post_view.post_id, post_view_id: post_view.id, active: true}
+        {user_id: new_user_id, post_id: infection.post_id, post_view_id: post_view.id, active: true}
       end
       Infection.create(new_infections_params)
 
