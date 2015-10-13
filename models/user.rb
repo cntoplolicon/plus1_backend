@@ -21,6 +21,14 @@ class User < ActiveRecord::Base
   has_many :active_infections, -> { order :created_at }
   has_many :bookmarks, -> { order :created_at }
 
+  def self.password_attributes
+    [:password, :password_digest, :resetting_password]
+  end
+
+  def self.private_attributes
+    password_attributes + [:notifications_enabled, :access_token]
+  end
+
   def authenticate(password)
     ::BCrypt::Password.new(password_digest) == password
   end

@@ -16,3 +16,8 @@ Aws.config.update(
 set :s3,
   bucket: 'infection-development',
   host: 'http://infection-development.s3-website.cn-north-1.amazonaws.com.cn/'
+
+set :yunba,
+  app_key: '561b7f3d860409b810e0d11a',
+  secret_key: 'sec-COCArBzu3fmEReMbrxsOByddKzMEgw8f5FqYo6tmHwA4Hatl',
+  api_uri: 'http://rest.yunba.io:8080'

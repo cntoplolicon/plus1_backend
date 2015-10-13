@@ -67,8 +67,7 @@ get '/users/:user_id/infections/active' do
     .joins(post: :user).includes(post: [:user, :post_pages]).order(:id).limit(100)
 
   content_type :json
-  confidential_user_attributes = [:password, :password_digest, :resetting_password, :access_token]
-  infections.to_json(include: {post: {include: {user: {except: confidential_user_attributes}, post_pages: {}}}})
+  infections.to_json(include: {post: {include: {user: {except: User.private_attributes}, post_pages: {}}}})
 end
 
 post '/posts/:post_id/comments' do
@@ -81,11 +80,17 @@ post '/posts/:post_id/comments' do
     post = Post.find(params[:post_id])
     comment_params = {user_id: @user.id, content: content}
     comment_params[:reply_to_id] = reply_to.id if reply_to
-    post.comments.create(comment_params)
+    comment = post.comments.create(comment_params)
     Post.where(id: post.id).update_all('comments_count = comments_count + 1')
 
     bookmark_params = {user_id: @user.id, post_id: post.id}
     Bookmark.where(bookmark_params).first_or_initialize(bookmark_params).save
+
+    replied_user = reply_to ? reply_to.user : post.user
+    if replied_user.notifications_enabled
+      message = comment.to_json(include: {user: {except: User.private_attributes}})
+      publish_notification(replied_user.username, build_notification_content('comment', message))
+    end
   end
 
   json(status: 'success')
@@ -94,11 +99,10 @@ end
 get '/posts/:post_id/comments' do
   validate_access_token
   content_type :json
-  confidential_user_attributes = [:password, :password_digest, :resetting_password, :access_token]
   comments = Comment.where(post_id: params[:post_id]).joins(:user).includes(:user).order(:created_at)
 
   content_type :json
-  comments.to_json(include: {user: {except: confidential_user_attributes}})
+  comments.to_json(include: {user: {except: User.private_attributes}})
 end
 
 post '/users/:user_id/bookmarks' do

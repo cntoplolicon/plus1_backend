@@ -40,7 +40,7 @@ def validate_access_token
 end
 
 def user_info_without_passwords(user)
-  user.to_json(except: [:password, :password_digest, :resetting_password])
+  user.to_json(except: User.password_attributes)
 end
 
 def update_user_attributes(user)
@@ -183,6 +183,5 @@ end
 get '/users/:user_id' do
   validate_access_token
   content_type :json
-  @user.to_json(except: [:password_digest, :password, :resetting_password,
-                         :access_token])
+  user_info_without_passwords(@user)
 end
