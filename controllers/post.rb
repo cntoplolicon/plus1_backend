@@ -87,11 +87,11 @@ post '/posts/:post_id/comments' do
     Bookmark.where(bookmark_params).first_or_initialize(bookmark_params).save
 
     replied_user = reply_to ? reply_to.user : post.user
+    comment_json = comment.to_json(include: {user: {except: User.private_attributes}})
     if replied_user.notifications_enabled
-      message = comment.to_json(include: {user: {except: User.private_attributes}})
-      publish_notification(replied_user.username, build_notification_content('comment', message))
+      publish_notification(replied_user.username, build_notification_content('comment', comment_json))
     end
-    return 201, comment.to_json
+    return 201, comment_json
   end
 end
 
