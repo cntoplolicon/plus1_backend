@@ -21,7 +21,7 @@ post '/users/:user_id/posts' do
     Infection.create(new_infections_params)
   end
 
-  json(status: 'success')
+  return 201, posts.to_json(except: :updated_at, include: :post_pages)
 end
 
 get '/users/:author_id/posts' do
@@ -58,7 +58,7 @@ post '/users/:user_id/infections/:infection_id/post_view' do
     end
   end
 
-  json(status: 'success')
+  return 201, post_view.to_json
 end
 
 get '/users/:user_id/infections/active' do
@@ -91,9 +91,8 @@ post '/posts/:post_id/comments' do
       message = comment.to_json(include: {user: {except: User.private_attributes}})
       publish_notification(replied_user.username, build_notification_content('comment', message))
     end
+    return 201, comment.to_json
   end
-
-  json(status: 'success')
 end
 
 get '/posts/:post_id/comments' do
@@ -112,8 +111,10 @@ post '/users/:user_id/bookmarks' do
   post_id = params[:post_id].to_i
 
   bookmark_params = {user_id: @user.id, post_id: post_id}
-  Bookmark.where(bookmark_params).first_or_initialize(bookmark_params).save
-  json(status: 'success')
+  bookmark = Bookmark.where(bookmark_params).first_or_initialize(bookmark_params)
+  bookmark.save
+
+  return 201, bookmark.to_json
 end
 
 delete '/users/:user_id/bookmarks/:post_id' do
