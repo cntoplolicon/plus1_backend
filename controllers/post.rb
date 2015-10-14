@@ -129,3 +129,11 @@ get '/users/:user_id/bookmarks' do
     .where(bookmarks: {user_id: @user.id}).order('bookmarks.created_at')
   bookmarked_posts.to_json(include: :post_pages)
 end
+
+get '/posts/:post_id' do
+  validate_access_token
+  post = Post.where(id: params[:post_id]).joins(:comments, :post_pages).includes(:post_pages).take
+  content_type :json
+  user_json_options = {except: User.private_attributes}
+  post.to_json(include: {user: user_json_options, comments: {include: {user: user_json_options}}, post_pages: {}})
+end
