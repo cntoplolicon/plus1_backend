@@ -12,6 +12,7 @@ def publish_notification(channel, content)
   end
 end
 
-def build_notification_content(type, message)
-  {type: type, publish_time: Time.zone.now, content: message}.to_json
+def build_notification_content(user_id, type, message)
+  user_id ||= 0
+  {user_id: user_id, type: type, publish_time: Time.zone.now, content: message}.to_json
 end
