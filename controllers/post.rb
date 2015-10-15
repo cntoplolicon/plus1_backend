@@ -88,7 +88,7 @@ post '/posts/:post_id/comments' do
 
     replied_user = reply_to ? reply_to.user : post.user
     comment_json = comment.to_json(include: {user: {except: User.private_attributes}})
-    if replied_user.notifications_enabled
+    if replied_user.id != @user.id && replied_user.notifications_enabled
       notification_content = build_notification_content(replied_user.id, 'comment', comment_json)
       publish_notification('user_' + replied_user.id.to_s, notification_content)
     end
