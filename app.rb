@@ -12,3 +12,5 @@ end
 Dir['./controllers/*.rb'].each do |f|
   require f
 end
+
+Time.zone_default = Time.find_zone('Beijing')

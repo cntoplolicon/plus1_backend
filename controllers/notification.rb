@@ -16,5 +16,5 @@ end
 
 def build_notification_content(user_id, type, message)
   user_id ||= 0
-  {user_id: user_id, type: type, publish_time: Time.now, content: message}.to_json
+  {user_id: user_id, type: type, publish_time: Time.zone.now, content: message}.to_json
 end
