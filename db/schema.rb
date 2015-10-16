@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151016022139) do
+ActiveRecord::Schema.define(version: 20151016073733) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
@@ -100,18 +100,17 @@ ActiveRecord::Schema.define(version: 20151016022139) do
   add_index "user_security_codes", ["username"], name: "index_user_security_codes_on_username", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "username",              limit: 48
-    t.string   "nickname",              limit: 48
-    t.string   "password_digest",       limit: 255
-    t.string   "avatar",                limit: 255
-    t.string   "biography",             limit: 255
-    t.integer  "gender",                limit: 4,   default: 0,    null: false
-    t.integer  "can_infect",            limit: 4,   default: 0,    null: false
-    t.integer  "infection_index",       limit: 4,   default: 0,    null: false
-    t.datetime "created_at",                                       null: false
-    t.datetime "updated_at",                                       null: false
-    t.string   "access_token",          limit: 48
-    t.boolean  "notifications_enabled",             default: true, null: false
+    t.string   "username",        limit: 48
+    t.string   "nickname",        limit: 48
+    t.string   "password_digest", limit: 255
+    t.string   "avatar",          limit: 255
+    t.string   "biography",       limit: 255
+    t.integer  "gender",          limit: 4,   default: 0, null: false
+    t.integer  "can_infect",      limit: 4,   default: 0, null: false
+    t.integer  "infection_index", limit: 4,   default: 0, null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.string   "access_token",    limit: 48
   end
 
   add_index "users", ["nickname"], name: "index_users_on_nickname", using: :btree
