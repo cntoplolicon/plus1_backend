@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151013064258) do
+ActiveRecord::Schema.define(version: 20151016022139) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
@@ -36,6 +36,14 @@ ActiveRecord::Schema.define(version: 20151013064258) do
   add_index "comments", ["post_id"], name: "index_comments_on_post_id", using: :btree
   add_index "comments", ["reply_to_id"], name: "index_comments_on_reply_to_id", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
+
+  create_table "feedbacks", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.string   "contact",    limit: 255, null: false
+    t.string   "content",    limit: 255, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
 
   create_table "infections", force: :cascade do |t|
     t.integer  "user_id",      limit: 4,                 null: false
