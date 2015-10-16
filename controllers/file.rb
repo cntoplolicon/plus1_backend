@@ -7,7 +7,3 @@ def upload_file_to_s3(uploaded_file)
                 content_type: uploaded_file[:type], body: uploaded_file[:tempfile])
   key
 end
-
-get '/image_hosts' do
-  json([settings.s3[:host]])
-end

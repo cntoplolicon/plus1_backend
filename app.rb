@@ -14,3 +14,8 @@ Dir['./controllers/*.rb'].each do |f|
 end
 
 Time.zone_default = Time.find_zone('Beijing')
+
+get '/app_info' do
+  json api_version: '0.0.1',
+       image_hosts: [settings.s3[:host]]
+end
