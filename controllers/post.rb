@@ -26,9 +26,9 @@ end
 
 get '/users/:author_id/posts' do
   validate_access_token
-  posts = Post.where(user_id: params[:author_id]).joins(:post_pages).includes(:post_pages)
+  posts = Post.where(user_id: params[:author_id]).joins(:post_pages, :user).includes(:post_pages, :user)
   content_type :json
-  posts.to_json(except: :updated_at, include: :post_pages)
+  posts.to_json(except: :updated_at, include: {post_pages: {}, user: {except: User.private_attributes}})
 end
 
 post '/users/:user_id/infections/:infection_id/post_view' do
@@ -126,9 +126,9 @@ end
 
 get '/users/:user_id/bookmarks' do
   validate_access_token
-  bookmarked_posts = Post.joins(:bookmarks, :post_pages).includes(:bookmarks, :post_pages)
+  bookmarked_posts = Post.joins(:bookmarks, :post_pages, :user).includes(:bookmarks, :post_pages, :user)
     .where(bookmarks: {user_id: @user.id}).order('bookmarks.created_at')
-  bookmarked_posts.to_json(include: :post_pages)
+  bookmarked_posts.to_json(include: {post_pages: {}, user: {except: User.private_attributes}})
 end
 
 get '/posts/:post_id' do
