@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
   end
 
   def self.private_attributes
-    password_attributes + [:notifications_enabled, :access_token]
+    password_attributes + [:access_token]
   end
 
   def authenticate(password)
