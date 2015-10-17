@@ -21,7 +21,7 @@ post '/users/:user_id/posts' do
     Infection.create(new_infections_params)
   end
 
-  return 201, posts.to_json(except: :updated_at, include: :post_pages)
+  return 201, post.to_json(except: :updated_at, include: :post_pages)
 end
 
 get '/users/:author_id/posts' do
