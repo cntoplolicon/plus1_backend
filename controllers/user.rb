@@ -72,7 +72,7 @@ def update_user_attributes(user)
 end
 
 post '/users' do
-  user = User.new(can_infect: 4, access_token: generate_access_token)
+  user = User.new(can_infect: 10000, access_token: generate_access_token)
   update_user_attributes(user)
 
   content_type :json
