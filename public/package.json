@@ -1,0 +1,33 @@
+{
+  "name": "infection",
+  "version": "1.0.0",
+  "description": "plus one app rest service",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cntoplolicon/infection.git"
+  },
+  "author": "cntoplolicon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cntoplolicon/infection/issues"
+  },
+  "homepage": "https://github.com/cntoplolicon/infection#readme",
+  "devDependencies": {
+    "jsx-loader": "^0.13.2",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.1"
+  },
+  "dependencies": {
+    "history": "^1.12.5",
+    "jquery": "^2.1.4",
+    "react": "^0.14.0",
+    "react-bootstrap": "^0.27.2",
+    "react-dom": "^0.14.0",
+    "react-router": "^1.0.0-rc3",
+    "react-router-bootstrap": "^0.19.2"
+  }
+}
