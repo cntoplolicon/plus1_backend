@@ -1,6 +1,6 @@
 const React = require('react')
 const PostThumbnail = require('./postThumbnail')
-const {Row, Col, Grid, ProgressBar, ListGroup, ListGroupItem} = require('react-bootstrap')
+const {Row, Col, Grid, ProgressBar, ListGroup, ListGroupItem, Input, Button} = require('react-bootstrap')
 const {Link} =  require('react-router')
 const $ = require('jquery')
 const moment = require('moment')
@@ -79,25 +79,70 @@ module.exports = React.createClass({
     }
   },
 
+  getCommentPlaceHolder: function() {
+    var replyTo = this.state.replyTo
+    if (replyTo) {
+      return `Reply to ${replyTo.user.nickname}: ${replyTo.content}`
+    }
+    return 'Leave a comment'
+  },
+
+  setReplyTo: function(replyTo) {
+    this.setState({replyTo: replyTo})
+  },
+
+  submitNewComment: function() {
+    var username = this.refs.username.getValue()
+    var password = this.refs.password.getValue()
+    var content = this.refs.comment.getValue()
+    var url = `/admin/posts/${this.props.params.postId}/comments`
+
+    var replyToId = this.state.replyTo ? this.state.replyTo.id : undefined
+    var data = {username: username, password: password, content: content, reply_to: replyToId}
+    $.ajax({
+      url: url,
+      method: 'POST',
+      dataType: 'json',
+      data: data,
+      success: function(data) {
+        this.setState({post: data, comments: this.createCommentsTree(data)})
+      }.bind(this),
+      error: function(xhr, status, err) {
+        if (xhr.status === 403) {
+          alert('Username or password incorrect')
+        }
+        console.error(url, status, err.toString())
+      }.bind(this)
+    })
+
+  },
+
   render: function() {
     var post = this.state.post
     if (!post) {
       return <ProgressBar striped bsStyle="info" now={this.state.progress * 100} />
     }
-    
+
+    const colWidth = 10
+    const colOffset = Math.floor((12 - colWidth) / 2)
+    if (this.state.replyTo) {
+      var cancelReplyButton = <Button className="cancel-reply-button" onClick={this.setReplyTo.bind(this, undefined)}>Cancel Reply</Button>
+    }
     return (
       <Grid>
         <Row>
-          <Col xs={12} md={6}>
+          <Col xs={colWidth} xsOffset={colOffset}>
             <PostThumbnail post={post} />
           </Col>
-          <Col xs={12} md={6}>
+        </Row>
+        <Row>
+          <Col xs={colWidth} xsOffset={colOffset}>
             <ListGroup>
               {
                 this.state.comments.map(function(comment) {
                   var style = {paddingLeft: `${comment.level}em`}
                   return (
-                    <ListGroupItem key={comment.id}>
+                    <ListGroupItem key={comment.id} onClick={this.setReplyTo.bind(this, comment)} >
                       <div style={style}>
                         <Link to={`/users/${comment.user.id}`}>
                           <span className="comment-user-nickname">{comment.user.nickname}</span>
@@ -106,9 +151,24 @@ module.exports = React.createClass({
                       </div>
                     </ListGroupItem>
                     )
-                })
+                }.bind(this))
               }
             </ListGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={colWidth} xsOffset={colOffset}>
+            <form className="form-horizontal">
+              <Input type="text" label="Username" placeholder="Admin account username" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="username" />
+              <Input type="password" label="Password" placeholder="Admin account password" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="password" />
+              <Input type="text" label="Content" placeholder={this.getCommentPlaceHolder()} labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="comment"/>
+              <div className="form-group">
+                <Col xs={10} xsOffset={2}>
+                  <Button bsStyle="primary" onClick={this.submitNewComment}>New Comment</Button>
+                  {cancelReplyButton}
+                </Col>
+              </div>
+            </form>
           </Col>
         </Row>
       </Grid>

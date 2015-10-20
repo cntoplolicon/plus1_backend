@@ -8,7 +8,7 @@ module.exports = React.createClass({
     var image = post.post_pages[0].image
     var srcProp = image ? {src: imageUrl(image)} : {}
     return (
-      <Thumbnail {...srcProp}>
+      <Thumbnail {...srcProp} onClick={this.props.onClick} >
         <p>{post.post_pages[0].text}</p>
       </Thumbnail>
     )

@@ -21,3 +21,7 @@ img.avatar {
 .comment-user-nickname {
   color: #7EE2FF;
 }
+
+.cancel-reply-button {
+  margin-left: 1em;
+}
