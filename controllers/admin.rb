@@ -23,3 +23,10 @@ get '/admin/feedbacks' do
   content_type :json
   feedbacks.to_json(include: {user: {except: User.private_attributes}})
 end
+
+get '/admin/posts/:post_id' do
+  post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
+  content_type :json
+  user_json_options = {except: User.private_attributes}
+  post.to_json(include: {user: user_json_options, comments: {include: {user: user_json_options}}, post_pages: {}})
+end

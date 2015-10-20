@@ -1,21 +1,9 @@
 const React = require('react')
 const $ = require('jquery')
-const {ProgressBar, Grid, Row, Col, Thumbnail} = require('react-bootstrap')
+const {ProgressBar, Grid, Row, Col} = require('react-bootstrap')
+const {Link} =  require('react-router')
 const Avatar = require('./avatar')
-const imageUrl = require('../imageUrl')
-
-const PostThumbnail = React.createClass({
-  render: function() {
-    var post = this.props.post;
-    var image = post.post_pages[0].image
-    var srcProp = image ? {src: imageUrl(image)} : {}
-    return (
-      <Thumbnail {...srcProp}>
-        <p>{post.post_pages[0].text}</p>
-      </Thumbnail>
-    )
-  }
-})
+const PostThumbnail = require('./postThumbnail')
 
 module.exports = React.createClass({
   loadUserFromServer: function() {
@@ -25,19 +13,19 @@ module.exports = React.createClass({
       dataType: 'json',
       cache: false,
       success: function(data) {
-        this.setState({user: data});
+        this.setState({user: data})
       }.bind(this),
       error: function(xhr, status, err) {
-        console.error(url, status, err.toString());
+        console.error(url, status, err.toString())
       }.bind(this),
       xhr: function() {
-        var xhr = new XMLHttpRequest();
+        var xhr = new XMLHttpRequest()
         xhr.addEventListener("progress", function(event) {
           if (event.lengthComputable) {
-            this.setState({progress: event.loaded / event.total});
+            this.setState({progress: event.loaded / event.total})
           }
-        }.bind(this), false);
-        return xhr;
+        }.bind(this), false)
+        return xhr
       }.bind(this)
     })
   },
@@ -47,24 +35,27 @@ module.exports = React.createClass({
   },
 
   componentDidMount: function() {
-    this.loadUserFromServer();
+    this.loadUserFromServer()
   },
 
   render: function() {
-    var user = this.state.user;
+    var user = this.state.user
     if (!user) {
       return <ProgressBar striped bsStyle="info" now={this.state.progress * 100} />
     }
-    const POSTS_PER_ROW = 4;
-    var rows = [];
-    var k = 0;
+    const POSTS_PER_ROW = 4
+    var rows = []
+    var k = 0
     for (var i = 0; i < user.posts.length / POSTS_PER_ROW; i++) {
-      var cols = [];
-      var rowKey = "";
+      var cols = []
+      var rowKey = ""
       for (var j = 0; j < POSTS_PER_ROW && k < user.posts.length; j++, k++) {
+        var post = user.posts[k]
         cols.push(
-          <Col key={user.posts[k].id} xs={6} md={4} lg={3}>
-            <PostThumbnail post={user.posts[k]} />
+          <Col key={post.id} xs={6} md={4} lg={3}>
+            <Link to={`/posts/${post.id}`}>
+              <PostThumbnail post={post} />
+            </Link>
           </Col>
         )
         if (rowKey) {

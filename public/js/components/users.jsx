@@ -55,7 +55,7 @@ const USERS_URL = '/admin/users'
 module.exports = React.createClass({
   loadUsersFromServer: function() {
     var searchValue = this.refs.search.getValue()
-    var data;
+    var data
     if (searchValue) {
       data = {search: searchValue}
     }
@@ -66,10 +66,10 @@ module.exports = React.createClass({
       cache: false,
       data: data,
       success: function(data) {
-        this.setState({data: data});
+        this.setState({data: data})
       }.bind(this),
       error: function(xhr, status, err) {
-        console.error(USERS_URL, status, err.toString());
+        console.error(USERS_URL, status, err.toString())
       }.bind(this)
     })
   },
@@ -79,7 +79,7 @@ module.exports = React.createClass({
   },
 
   componentDidMount: function() {
-    this.loadUsersFromServer();
+    this.loadUsersFromServer()
   },
 
   render: function() {

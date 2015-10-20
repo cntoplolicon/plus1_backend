@@ -7,7 +7,7 @@ img.avatar {
   width: 96px;
   height: 96px;
   border-radius: 48px;
-  border: 2px solid yellow;
+  border: 2px solid #FEB724;
 }
 
 .user-info-container {
@@ -16,4 +16,8 @@ img.avatar {
 
 .user-info-wrapper {
   display: inline-block;
+}
+
+.comment-user-nickname {
+  color: #7EE2FF;
 }
