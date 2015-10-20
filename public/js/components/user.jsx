@@ -1,6 +1,6 @@
 const React = require('react')
 const $ = require('jquery')
-const {ProgressBar, Grid, Row, Col} = require('react-bootstrap')
+const {ProgressBar, Grid, Row, Col, Button, Input} = require('react-bootstrap')
 const {Link} =  require('react-router')
 const Avatar = require('./avatar')
 const PostThumbnail = require('./postThumbnail')
@@ -36,6 +36,45 @@ module.exports = React.createClass({
 
   componentDidMount: function() {
     this.loadUserFromServer()
+  },
+
+  submitNewPost: function() {
+    var data = new FormData()
+
+    var text = this.refs.text.getValue()
+    if (!text) {
+      alert('Content cannot be blank')
+      return
+    }
+    data.append('post_pages[][text]', text)
+
+    var username = this.state.user.username
+    var password = this.refs.password.getValue()
+    data.append('username', username)
+    data.append('password', password)
+
+    var imageFiles = this.refs.image.getInputDOMNode().files
+    if (imageFiles[0]) {
+      data.append('post_pages[][image]', imageFiles[0])
+    }
+
+    var url = `/admin/users/${this.props.params.userId}/posts`
+    $.ajax({
+      url: url,
+      method: 'POST',
+      processData: false,
+      contentType: false,
+      data: data,
+      success: function(data) {
+        this.setState({user: data})
+      }.bind(this),
+      error: function(xhr, status, err) {
+        if (xhr.status === 403) {
+          alert('Username or password incorrect')
+        }
+        console.error(url, status, err.toString())
+      }.bind(this)
+    })
   },
 
   render: function() {
@@ -75,6 +114,16 @@ module.exports = React.createClass({
           </div>
         </div>
         <Grid>{rows}</Grid>
+        <form className="form-horizontal">
+          <Input type="password" label="Password" placeholder="Admin account password" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="password" />
+          <Input type="file" label="Upload an image" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="image" />
+          <Input type="textarea" label="Say somehting" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="text" />
+          <div className="form-group">
+            <Col xs={10} xsOffset={2}>
+              <Button bsStyle="primary" onClick={this.submitNewPost}>New Post</Button>
+            </Col>
+          </div>
+        </form>
       </div>
     )
   }
