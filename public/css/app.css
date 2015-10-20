@@ -2,3 +2,18 @@
   margin-top: 2em;
   margin-bottom: 1em;
 }
+
+img.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 48px;
+  border: 2px solid yellow;
+}
+
+.user-info-container {
+  text-align: center;
+}
+
+.user-info-wrapper {
+  display: inline-block;
+}

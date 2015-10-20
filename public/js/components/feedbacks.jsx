@@ -17,7 +17,7 @@ const FeedbacksTable = React.createClass({
             <th>Nickname</th>
             <th>Contact</th>
             <th>Content</th>
-            <th>CreatedAt</th>
+            <th>Created at</th>
           </tr>
         </thead>
         <tbody>

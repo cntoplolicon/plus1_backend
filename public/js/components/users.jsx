@@ -1,4 +1,5 @@
 const React = require('react')
+const {Link} =  require('react-router')
 const {Button, Input, Table} = require('react-bootstrap')
 const $ = require('jquery')
 
@@ -32,7 +33,11 @@ const UsersTable = React.createClass({
               return (
                 <tr key={user.id}>
                   <td>{user.id}</td>
-                  <td>{user.username}</td>
+                  <td>
+                    <Link to={`/users/${user.id}`}>
+                      {user.username}
+                    </Link>
+                  </td>
                   <td>{user.nickname}</td>
                   <td>{this.getGenderText(user.gender)}</td>
                 </tr>

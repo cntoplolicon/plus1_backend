@@ -8,7 +8,7 @@ get '/admin/users' do
 end
 
 get '/admin/users/:user_id' do
-  user = User.where(id: params[:user_id]).includes(posts: :post_pages)
+  user = User.where(id: params[:user_id]).includes(posts: :post_pages).take
 
   content_type :json
   user.to_json(except: User.private_attributes, include: {posts: {include: :post_pages}})
@@ -18,7 +18,7 @@ get '/admin/feedbacks' do
   feedbacks = Feedback.includes(:user).joins(:user).order(created_at: :desc)
   username = params[:username]
   feedbacks = feedbacks.where(users: {username: username}) if username
-  feedbacks = feedbacks.limit(100) unless username
+  feedbacks = feedbacks.limit(1000) unless username
 
   content_type :json
   feedbacks.to_json(include: {user: {except: User.private_attributes}})
