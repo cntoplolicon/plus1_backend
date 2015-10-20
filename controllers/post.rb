@@ -6,7 +6,7 @@ post '/users/:user_id/posts' do
     post_page = post_page.deep_symbolize_keys
     image = upload_file_to_s3(post_page[:image]) if post_page[:image]
 
-    page_params = post_page.slice(:text).merge(order: i, image: image)
+    page_params = post_page.slice(:text, :image_width, :image_height).merge(order: i, image: image)
     post.post_pages.build(page_params)
   end
 

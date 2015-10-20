@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151016073733) do
+ActiveRecord::Schema.define(version: 20151020021756) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
@@ -59,12 +59,14 @@ ActiveRecord::Schema.define(version: 20151016073733) do
   add_index "infections", ["user_id"], name: "index_infections_on_user_id", using: :btree
 
   create_table "post_pages", force: :cascade do |t|
-    t.integer  "post_id",    limit: 4,   null: false
-    t.integer  "order",      limit: 4,   null: false
-    t.string   "image",      limit: 255
-    t.string   "text",       limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.integer  "post_id",      limit: 4,   null: false
+    t.integer  "order",        limit: 4,   null: false
+    t.string   "image",        limit: 255
+    t.string   "text",         limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.integer  "image_width",  limit: 4
+    t.integer  "image_height", limit: 4
   end
 
   add_index "post_pages", ["post_id"], name: "index_post_pages_on_post_id", using: :btree
