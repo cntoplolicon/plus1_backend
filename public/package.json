@@ -24,6 +24,7 @@
   "dependencies": {
     "history": "^1.12.5",
     "jquery": "^2.1.4",
+    "moment": "^2.10.6",
     "react": "^0.14.0",
     "react-bootstrap": "^0.27.2",
     "react-dom": "^0.14.0",

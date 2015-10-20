@@ -4,11 +4,13 @@ const {Router, Route, Link} = require('react-router')
 
 const AppNav = require('./components/appNav')
 const Users = require('./components/users')
+const Feedbacks = require('./components/feedbacks')
 
 var Routes = (
   <Router>
     <Route path="/" component={AppNav}>
       <Route path="/users" component={Users} />
+      <Route path="/feedbacks" component={Feedbacks} />
     </Route>
   </Router>
 )

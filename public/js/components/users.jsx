@@ -86,7 +86,7 @@ module.exports = React.createClass({
           </span>
           <Input type="text" placeholder="Search by username or nickname" ref="search"/>
         </div>
-        <div className="users-table-hint">At most 100 users are shown. Use searching to show more.</div>
+        <div className="users-table-hint">Show at most 100 users. Use searching to show more.</div>
         <UsersTable users={this.state.data} />
       </div>
     )
