@@ -117,13 +117,16 @@ module.exports = React.createClass({
 
   },
 
-  submitPostRecommended: function() {
-    var recommended = this.refs.recommended.getChecked()
+  submitRecommendation: function() {
+    var recommendation = this.refs.recommendation.getValue()
+    if (recommendation === '') {
+      recommendation = null
+    }
     var post = this.state.post
-    post.recommended = recommended
+    post.recommendation = recommendation
     this.setState({post: post})
-    var data = {recommended: recommended}
-    var url = `/admin/posts/${this.props.params.postId}/recommended`
+    var data = {recommendation: recommendation}
+    var url = `/admin/posts/${this.props.params.postId}/recommendation`
     $.ajax({
       url: url,
       method: 'PUT',
@@ -184,18 +187,18 @@ module.exports = React.createClass({
           <Col xs={colWidth} xsOffset={colOffset}>
             <Panel defaultExpanded header="Recommendation">
               <form className="form-horizontal">
-                <Input type="checkbox" label="Recommended" labelClassName="col-xs-2" wrapperClassName="col-xs-10"
-                  ref="recommended" onChange={this.submitPostRecommended} checked={post.recommended}/>
+                <Input type="number" label="Recommendation" labelClassName="col-xs-3" wrapperClassName="col-xs-9"
+                  ref="recommendation" onChange={this.submitRecommendation} value={this.state.post.recommendation} />
               </form>
             </Panel>
             <Panel defaultExpanded header="New Comment">
               <form className="form-horizontal">
                 <Input type="text" label="Username" placeholder="Admin account username"
-                  labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="username" />
+                  labelClassName="col-xs-3" wrapperClassName="col-xs-9" ref="username" />
                 <Input type="password" label="Password" placeholder="Admin account password"
-                  labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="password" />
-                <Input type="text" label="Content" placeholder={this.getCommentPlaceHolder()}
-                  labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="comment"/>
+                  labelClassName="col-xs-3" wrapperClassName="col-xs-9" ref="password" />
+                <Input type="textarea" label="Content" placeholder={this.getCommentPlaceHolder()}
+                  labelClassName="col-xs-3" wrapperClassName="col-xs-9" ref="comment"/>
                 <div className="form-group">
                   <Col xs={10} xsOffset={2}>
                     <Button bsStyle="primary" onClick={this.submitNewComment}>New Comment</Button>
