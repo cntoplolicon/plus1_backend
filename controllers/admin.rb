@@ -57,6 +57,15 @@ post '/admin/posts/:post_id/comments' do
   post.to_json(include: {user: user_json_options, comments: {include: {user: user_json_options}}, post_pages: {}})
 end
 
+put '/admin/posts/:post_id/recommended' do
+  recommended = params[:recommended]
+  post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
+  post.update(recommended: recommended)
+  content_type :json
+  user_json_options = {except: User.private_attributes}
+  post.to_json(include: {user: user_json_options, comments: {include: {user: user_json_options}}, post_pages: {}})
+end
+
 post '/admin/users/:user_id/posts' do
   validate_admin_account
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151021031949) do
+ActiveRecord::Schema.define(version: 20151021032850) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
@@ -81,12 +81,13 @@ ActiveRecord::Schema.define(version: 20151021031949) do
   add_index "post_views", ["infection_id"], name: "index_post_views_on_infection_id", using: :btree
 
   create_table "posts", force: :cascade do |t|
-    t.integer  "user_id",        limit: 4,             null: false
-    t.integer  "comments_count", limit: 4, default: 0, null: false
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-    t.integer  "views_count",    limit: 4, default: 0, null: false
-    t.integer  "spreads_count",  limit: 4, default: 0, null: false
+    t.integer  "user_id",        limit: 4,                 null: false
+    t.integer  "comments_count", limit: 4, default: 0,     null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.integer  "views_count",    limit: 4, default: 0,     null: false
+    t.integer  "spreads_count",  limit: 4, default: 0,     null: false
+    t.boolean  "recommended",              default: false, null: false
   end
 
   add_index "posts", ["user_id"], name: "index_posts_on_user_id", using: :btree

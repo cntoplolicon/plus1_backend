@@ -8,7 +8,7 @@ module.exports = React.createClass({
     var image = post.post_pages[0].image
     var srcProp = image ? {src: imageUrl(image)} : {}
     return (
-      <Thumbnail {...srcProp} onClick={this.props.onClick} >
+      <Thumbnail {...srcProp} onClick={this.props.onClick} className={post.recommended ? 'recommended' : ''} > 
         <p>{post.post_pages[0].text}</p>
       </Thumbnail>
     )

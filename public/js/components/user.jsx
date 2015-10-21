@@ -1,6 +1,6 @@
 const React = require('react')
 const $ = require('jquery')
-const {ProgressBar, Grid, Row, Col, Button, Input} = require('react-bootstrap')
+const {ProgressBar, Grid, Row, Col, Button, Input, Panel} = require('react-bootstrap')
 const {Link} =  require('react-router')
 const Avatar = require('./avatar')
 const PostThumbnail = require('./postThumbnail')
@@ -113,16 +113,18 @@ module.exports = React.createClass({
           </div>
         </div>
         <Grid>{rows}</Grid>
-        <form className="form-horizontal">
-          <Input type="password" label="Password" placeholder="Admin account password" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="password" />
-          <Input type="file" label="Upload an image" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="image" />
-          <Input type="textarea" label="Say somehting" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="text" />
-          <div className="form-group">
-            <Col xs={10} xsOffset={2}>
-              <Button bsStyle="primary" onClick={this.submitNewPost}>New Post</Button>
-            </Col>
-          </div>
-        </form>
+        <Panel defaultExpanded header="New Post">
+          <form className="form-horizontal">
+            <Input type="password" label="Password" placeholder="Admin account password" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="password" />
+            <Input type="file" label="Upload an image" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="image" />
+            <Input type="textarea" label="Say somehting" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="text" />
+            <div className="form-group">
+              <Col xs={10} xsOffset={2}>
+                <Button bsStyle="primary" onClick={this.submitNewPost}>New Post</Button>
+              </Col>
+            </div>
+          </form>
+        </Panel>
       </div>
     )
   }

@@ -1,6 +1,6 @@
 const React = require('react')
 const PostThumbnail = require('./postThumbnail')
-const {Row, Col, Grid, ProgressBar, ListGroup, ListGroupItem, Input, Button} = require('react-bootstrap')
+const {Row, Col, Grid, ProgressBar, ListGroup, ListGroupItem, Input, Button, Panel} = require('react-bootstrap')
 const {Link} =  require('react-router')
 const $ = require('jquery')
 const moment = require('moment')
@@ -117,6 +117,30 @@ module.exports = React.createClass({
 
   },
 
+  submitPostRecommended: function() {
+    var recommended = this.refs.recommended.getChecked()
+    var post = this.state.post
+    post.recommended = recommended
+    this.setState({post: post})
+    var data = {recommended: recommended}
+    var url = `/admin/posts/${this.props.params.postId}/recommended`
+    $.ajax({
+      url: url,
+      method: 'PUT',
+      dataType: 'json',
+      data: data,
+      success: function(data) {
+        this.setState({post: data, comments: this.createCommentsTree(data)})
+      }.bind(this),
+      error: function(xhr, status, err) {
+        if (xhr.status === 403) {
+          alert("Username or password incorrect, or it's not an admin account")
+        }
+        console.error(url, status, err.toString())
+      }.bind(this)
+    })
+  },
+
   render: function() {
     var post = this.state.post
     if (!post) {
@@ -158,17 +182,28 @@ module.exports = React.createClass({
         </Row>
         <Row>
           <Col xs={colWidth} xsOffset={colOffset}>
-            <form className="form-horizontal">
-              <Input type="text" label="Username" placeholder="Admin account username" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="username" />
-              <Input type="password" label="Password" placeholder="Admin account password" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="password" />
-              <Input type="text" label="Content" placeholder={this.getCommentPlaceHolder()} labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="comment"/>
-              <div className="form-group">
-                <Col xs={10} xsOffset={2}>
-                  <Button bsStyle="primary" onClick={this.submitNewComment}>New Comment</Button>
-                  {cancelReplyButton}
-                </Col>
-              </div>
-            </form>
+            <Panel defaultExpanded header="Recommendation">
+              <form className="form-horizontal">
+                <Input type="checkbox" label="Recommended" labelClassName="col-xs-2" wrapperClassName="col-xs-10"
+                  ref="recommended" onChange={this.submitPostRecommended} checked={post.recommended}/>
+              </form>
+            </Panel>
+            <Panel defaultExpanded header="New Comment">
+              <form className="form-horizontal">
+                <Input type="text" label="Username" placeholder="Admin account username"
+                  labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="username" />
+                <Input type="password" label="Password" placeholder="Admin account password"
+                  labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="password" />
+                <Input type="text" label="Content" placeholder={this.getCommentPlaceHolder()}
+                  labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="comment"/>
+                <div className="form-group">
+                  <Col xs={10} xsOffset={2}>
+                    <Button bsStyle="primary" onClick={this.submitNewComment}>New Comment</Button>
+                    {cancelReplyButton}
+                  </Col>
+                </div>
+              </form>
+            </Panel>
           </Col>
         </Row>
       </Grid>

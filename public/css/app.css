@@ -25,3 +25,7 @@ img.avatar {
 .cancel-reply-button {
   margin-left: 1em;
 }
+
+.thumbnail.recommended {
+  border: 1px solid #FEB724;
+}
