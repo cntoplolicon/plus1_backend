@@ -1,19 +1,28 @@
+var ExtractTextPlugin = require("extract-text-webpack-plugin")
+
 module.exports = {
   entry: './js/index.jsx',
   output: {
-    filename: './dist/bundle.js'
+    filename: 'bundle.js',
+    path: './dist'
   },
   module: {
     loaders: [
-      {
-        test: /\.jsx$/,
-        loader: 'jsx-loader?insertPragma=React.DOM&harmony'
-      }
+      {test: /\.jsx$/, loader: 'jsx-loader?insertPragma=React.DOM&harmony'},
+      {test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader')},
+      {test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
+      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
+      {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},
+      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'}
     ]
   },
   resolve: {
     extensions: ['', '.js', '.jsx']
   },
   debug: true,
-  devtool: 'eval-cheap-module-source-map'
+  devtool: 'eval-cheap-module-source-map',
+
+  plugins: [
+    new ExtractTextPlugin("bundle.css")
+  ]
 }

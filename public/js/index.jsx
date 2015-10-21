@@ -1,3 +1,5 @@
+require('../css/app.css')
+
 const React = require('react')
 const ReactDom = require('react-dom')
 const {Router, Route, Link} = require('react-router')
