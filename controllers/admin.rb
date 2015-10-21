@@ -1,3 +1,5 @@
+require 'rmagick'
+
 def validate_admin_account
   @user = User.where(username: params[:username]).take
   halt 403 unless @user && @user.authenticate(params[:password])
@@ -61,9 +63,24 @@ post '/admin/users/:user_id/posts' do
   post = @user.posts.build
   params[:post_pages].each_with_index do |post_page, i|
     post_page = post_page.deep_symbolize_keys
-    image = upload_file_to_s3(post_page[:image]) if post_page[:image]
-
-    page_params = post_page.slice(:text, :image_width, :image_height).merge(order: i, image: image)
+    halt 400 if !post_page[:text] && !post_page[:image]
+    page_params = post_page.slice(:text).merge(order: i)
+    if post_page[:image]
+      image = Magick::Image.read(post_page[:image][:tempfile].path).first
+      image = image.resize_to_fit(960, 960)
+      tempfile = Tempfile.new('image')
+      begin
+        image.write(tempfile.path) do
+          self.format = 'JPEG'
+          self.quality = 75
+        end
+        image_path = upload_file_to_s3(filename: 'image.jpg', type: 'image/jpeg', tempfile: tempfile)
+        page_params = page_params.merge(image_width: image.columns, image_height: image.rows, image: image_path)
+      ensure
+        tempfile.close
+        tempfile.unlink
+      end
+    end
     post.post_pages.build(page_params)
   end
 

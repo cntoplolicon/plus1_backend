@@ -1,5 +1,5 @@
 GEM
-  remote: http://ruby.taobao.org/
+  remote: https://ruby.taobao.org/
   specs:
     activemodel (4.2.4)
       activesupport (= 4.2.4)
@@ -38,6 +38,7 @@ GEM
     rack-test (0.6.3)
       rack (>= 1.0)
     rake (10.4.2)
+    rmagick (2.15.4)
     sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -66,6 +67,7 @@ DEPENDENCIES
   byebug
   mysql2
   rake
+  rmagick
   sinatra
   sinatra-activerecord
   sinatra-contrib

@@ -42,20 +42,19 @@ module.exports = React.createClass({
     var data = new FormData()
 
     var text = this.refs.text.getValue()
-    if (!text) {
+    var image = this.refs.image.getInputDOMNode().files[0]
+    if (!image && !text) {
       alert('Content cannot be blank')
       return
     }
-    data.append('post_pages[][text]', text)
 
-    var username = this.state.user.username
-    var password = this.refs.password.getValue()
-    data.append('username', username)
-    data.append('password', password)
-
-    var imageFiles = this.refs.image.getInputDOMNode().files
-    if (imageFiles[0]) {
-      data.append('post_pages[][image]', imageFiles[0])
+    data.append('username', this.state.user.username)
+    data.append('password', this.refs.password.getValue())
+    if (text) {
+      data.append('post_pages[][text]', text)
+    }
+    if (image) {
+      data.append('post_pages[][image]', image)
     }
 
     var url = `/admin/users/${this.props.params.userId}/posts`
