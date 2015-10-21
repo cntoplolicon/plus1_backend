@@ -26,7 +26,11 @@ class User < ActiveRecord::Base
   end
 
   def self.private_attributes
-    password_attributes + [:access_token]
+    password_attributes + [:access_token, :admin]
+  end
+
+  def admin?
+    admin
   end
 
   def authenticate(password)

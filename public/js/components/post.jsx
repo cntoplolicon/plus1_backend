@@ -109,7 +109,7 @@ module.exports = React.createClass({
       }.bind(this),
       error: function(xhr, status, err) {
         if (xhr.status === 403) {
-          alert('Username or password incorrect')
+          alert("Username or password incorrect, or it's not an admin account")
         }
         console.error(url, status, err.toString())
       }.bind(this)

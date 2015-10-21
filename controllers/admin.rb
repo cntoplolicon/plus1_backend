@@ -2,7 +2,7 @@ require 'rmagick'
 
 def validate_admin_account
   @user = User.where(username: params[:username]).take
-  halt 403 unless @user && @user.authenticate(params[:password])
+  halt 403 unless @user && @user.admin? && @user.authenticate(params[:password])
 end
 
 get '/admin/users' do
