@@ -33,10 +33,8 @@ def generate_access_token
 end
 
 def validate_access_token
-  user_id = params[:user_id]
-  return unless user_id =~ /\A\d+\Z/
-  @user = User.find(user_id)
-  halt 403 if params[:access_token] != @user.access_token
+  @user = User.where(id: params[:user_id]).take
+  halt 403 if !@user || params[:access_token] != @user.access_token
 end
 
 def user_info_without_passwords(user)
@@ -72,7 +70,7 @@ def update_user_attributes(user)
 end
 
 post '/users' do
-  user = User.new(can_infect: 10000, access_token: generate_access_token)
+  user = User.new(can_infect: 10_000, access_token: generate_access_token)
   update_user_attributes(user)
 
   content_type :json

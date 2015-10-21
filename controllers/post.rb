@@ -138,3 +138,11 @@ get '/posts/:post_id' do
   user_json_options = {except: User.private_attributes}
   post.to_json(include: {user: user_json_options, comments: {include: {user: user_json_options}}, post_pages: {}})
 end
+
+get '/recommendations' do
+  validate_access_token
+  posts = Post.where.not(recommendation: nil).joins(:user, :post_pages).includes(:user, :post_pages)
+    .order(recommendation: :desc, created_at: :desc)
+  content_type :json
+  posts.to_json(include: {user: {except: User.private_attributes}, post_pages: {}})
+end
