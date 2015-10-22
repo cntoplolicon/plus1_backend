@@ -26,7 +26,7 @@ end
 
 get '/users/:author_id/posts' do
   validate_access_token
-  posts = Post.where(user_id: params[:author_id]).joins(:post_pages, :user).includes(:post_pages, :user)
+  posts = Post.where(user_id: params[:author_id]).joins(:post_pages, :user).includes(:post_pages, :user).order(created_at: :desc)
   content_type :json
   posts.to_json(except: :updated_at, include: {post_pages: {}, user: {except: User.private_attributes}})
 end
@@ -127,7 +127,7 @@ end
 get '/users/:user_id/bookmarks' do
   validate_access_token
   bookmarked_posts = Post.joins(:bookmarks, :post_pages, :user).includes(:bookmarks, :post_pages, :user)
-    .where(bookmarks: {user_id: @user.id}).order('bookmarks.created_at')
+    .where(bookmarks: {user_id: @user.id}).order('bookmarks.created_at desc')
   bookmarked_posts.to_json(include: {post_pages: {}, user: {except: User.private_attributes}})
 end
 
