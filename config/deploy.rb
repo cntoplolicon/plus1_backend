@@ -36,6 +36,16 @@ set :deploy_to, '/var/www/plus1_backend'
 
 namespace :deploy do
 
+  task :restart do
+    on fetch(:bundle_servers) do
+      within release_path do
+        with fetch(:bundle_env_variables, {}) do
+          execute :bundle, "exec thin -C #{fetch(:thin_config_path)} restart"
+        end
+      end
+    end
+  end
+
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
       # Here we can do anything such as:
@@ -45,7 +55,10 @@ namespace :deploy do
     end
   end
 
+  after :publishing, :restart
+
 end
 
 set :npm_target_path, -> { release_path.join('public') }
 set :npm_flags, '--spin'
+set :thin_config_path, '/etc/thin/plus1.yml'
