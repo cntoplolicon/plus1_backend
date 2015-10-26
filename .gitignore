@@ -37,3 +37,7 @@ build/
 
 # vim noises
 *.swp
+
+# deployment
+/pid/
+/log/
