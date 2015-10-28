@@ -53,7 +53,7 @@
 set :branch, :release
 
 server '123.59.60.110',
-  user: 'root',
+  user: 'ubuntu',
   roles: %w{web app db},
   ssh_options: {
     forward_agent: false,
