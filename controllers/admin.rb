@@ -5,6 +5,15 @@ def validate_admin_account
   halt 403 unless @user && @user.admin? && @user.authenticate(params[:password])
 end
 
+before '/admin/*' do
+  @auth ||= Rack::Auth::Basic::Request.new(request.env)
+  authenticated = @auth.provided? && @auth.basic? && @auth.credentials &&
+    @auth.credentials == [settings.admin[:username], settings.admin[:password]]
+  return if authenticated
+  headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+  halt 401, "Not authorized\n"
+end
+
 get '/admin/users' do
   users = User.all
   search = params[:search]

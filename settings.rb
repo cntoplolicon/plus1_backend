@@ -21,3 +21,7 @@ set :yunba,
   app_key: '561b7f3d860409b810e0d11a',
   secret_key: 'sec-COCArBzu3fmEReMbrxsOByddKzMEgw8f5FqYo6tmHwA4Hatl',
   api_uri: 'http://rest.yunba.io:8080'
+
+set :admin,
+  username: '+1',
+  password: '62fb52dd1ef7dd28f5ee28e15af7fc2e'
