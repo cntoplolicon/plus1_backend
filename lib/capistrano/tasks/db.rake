@@ -3,7 +3,7 @@ namespace :db do
     on fetch(:bundle_servers) do
       within release_path do
         with fetch(:bundle_env_variables, {}) do
-          execute :bundle, 'exec rake db:migrate'
+          execute :bundle, "exec rake db:migrate RACK_ENV=#{fetch(:stage)}"
         end
       end
     end

@@ -1,5 +1,5 @@
 {
-  "name": "infection",
+  "name": "plus1",
   "version": "1.0.0",
   "description": "plus one app rest service",
   "main": "app.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cntoplolicon/infection.git"
+    "url": "git+https://github.com/cntoplolicon/plus1_backend.git"
   },
   "author": "cntoplolicon",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cntoplolicon/infection/issues"
+    "url": "https://github.com/cntoplolicon/plus1_backend/issues"
   },
-  "homepage": "https://github.com/cntoplolicon/infection#readme",
+  "homepage": "https://github.com/cntoplolicon/plus1_backend#readme",
   "devDependencies": {
     "css-loader": "^0.20.2",
     "extract-text-webpack-plugin": "^0.8.2",

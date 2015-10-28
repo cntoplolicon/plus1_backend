@@ -26,4 +26,4 @@ production:
   database: plus1
   username: plus1
   password: plus1
-  host: 10.10.192.155
+  host: 10.10.184.210
