@@ -26,7 +26,8 @@ end
 
 get '/users/:author_id/posts' do
   validate_access_token
-  posts = Post.where(user_id: params[:author_id]).joins(:post_pages, :user).includes(:post_pages, :user).order(created_at: :desc)
+  posts = Post.where(user_id: params[:author_id]).joins(:post_pages, :user)
+    .includes(:post_pages, :user).order(created_at: :desc)
   content_type :json
   posts.to_json(except: :updated_at, include: {post_pages: {}, user: {except: User.private_attributes}})
 end

@@ -1,10 +1,13 @@
 require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/json'
+require 'sinatra/config_file'
 require 'net/http'
-require './settings'
-
 require 'byebug' if Sinatra::Base.development?
+
+set :environments, %w(development test production staging)
+
+config_file './config.yml'
 
 Dir['./models/*.rb'].each do |f|
   require f

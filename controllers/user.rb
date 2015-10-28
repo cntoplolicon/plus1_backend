@@ -88,10 +88,10 @@ post '/security_codes/account' do
   end
 
   security_code = send_security_code(username)
-  if Sinatra::Base.development?
-    json(security_code: security_code)
-  else
+  if Sinatra::Base.production?
     json(status: 'success')
+  else
+    json(security_code: security_code)
   end
 end
 
@@ -107,10 +107,10 @@ post '/security_codes/password' do
   end
 
   security_code = send_security_code(username)
-  if Sinatra::Base.development?
-    json(security_code: security_code)
-  else
+  if Sinatra::Base.production?
     json(status: 'success')
+  else
+    json(security_code: security_code)
   end
 end
 
