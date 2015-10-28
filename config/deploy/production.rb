@@ -50,6 +50,8 @@
 # The server-based syntax can be used to override options:
 # ------------------------------------
 
+set :branch, :release
+
 server '123.59.60.110',
   user: 'root',
   roles: %w{web app db},
