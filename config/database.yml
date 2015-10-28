@@ -1,8 +1,5 @@
 default: &default
   adapter: mysql2
-  database: infection
-  username: infection
-  password: infection
   pool: 50
   timeout: 5000
   encoding: utf8mb4
@@ -12,12 +9,21 @@ default: &default
 
 development:
   <<: *default
+  database: infection
+  username: infection
+  password: infection
   host: 192.168.1.122
 
 staging:
   <<: *default
+  database: infection
+  username: infection
+  password: infection
   host: 192.168.1.122
 
 production:
   <<: *default
-  host: 192.168.1.122
+  database: plus1
+  username: plus1
+  password: plus1
+  host: 10.10.192.155
