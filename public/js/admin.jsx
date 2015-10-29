@@ -3,7 +3,7 @@ require('bootstrap/less/bootstrap.less')
 
 const React = require('react')
 const ReactDom = require('react-dom')
-const {Router, Route, Link} = require('react-router')
+const {Router, Route} = require('react-router')
 
 const AppNav = require('./components/appNav')
 const Users = require('./components/users')
