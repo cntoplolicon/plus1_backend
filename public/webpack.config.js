@@ -12,6 +12,7 @@ module.exports = {
   module: {
     loaders: [
       {test: /\.jsx$/, loader: 'jsx-loader?insertPragma=React.DOM&harmony'},
+      {test: /\.less$/, loader: 'style!css!less'},
       {test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader')},
       {test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
       {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},

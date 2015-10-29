@@ -1,4 +1,5 @@
 require('../css/admin.css')
+require('bootstrap/less/bootstrap.less')
 
 const React = require('react')
 const ReactDom = require('react-dom')
