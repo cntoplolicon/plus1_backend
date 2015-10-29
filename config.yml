@@ -11,15 +11,9 @@ aws:
   secret_access_key: '4p182v6XYs85g/0WWBMl+mvk/nseEkQoPrt//xBE'
 
 s3:
-  development: 
-    bucket: 'infection-development'
-    host: 'http://infection-development.s3-website.cn-north-1.amazonaws.com.cn/'
-  staging:
-    bucket: 'infection-development'
-    host: 'http://infection-development.s3-website.cn-north-1.amazonaws.com.cn/'
   production:
     bucket: 'plus1'
-    host: 'http://plus1.s3-website.cn-north-1.amazonaws.com.cn/'
+    host: 'http://image.oneplusapp.com/'
 
 yunba:
   app_key: '561b7f3d860409b810e0d11a'
