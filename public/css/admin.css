@@ -1,0 +1,33 @@
+@import "~bootstrap/dist/css/bootstrap.css"
+
+.users-table-hint {
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+img.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 48px;
+  border: 2px solid #FEB724;
+}
+
+.user-info-container {
+  text-align: center;
+}
+
+.user-info-wrapper {
+  display: inline-block;
+}
+
+.comment-user-nickname {
+  color: #7EE2FF;
+}
+
+.cancel-reply-button {
+  margin-left: 1em;
+}
+
+.thumbnail.recommended {
+  border: 2px solid #FEB724;
+}

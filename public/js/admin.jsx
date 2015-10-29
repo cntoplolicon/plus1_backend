@@ -1,4 +1,4 @@
-require('../css/app.css')
+require('../css/admin.css')
 
 const React = require('react')
 const ReactDom = require('react-dom')

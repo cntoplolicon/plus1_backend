@@ -1,10 +1,13 @@
 var ExtractTextPlugin = require("extract-text-webpack-plugin")
 
 module.exports = {
-  entry: './js/index.jsx',
+  entry: {
+    admin: './js/admin.jsx',
+    app: './js/app.js'
+  },
   output: {
-    filename: 'bundle.js',
-    path: './dist'
+    path: './dist',
+    filename: '[name].js'
   },
   module: {
     loaders: [
@@ -23,6 +26,6 @@ module.exports = {
   devtool: 'eval-cheap-module-source-map',
 
   plugins: [
-    new ExtractTextPlugin("bundle.css")
+    new ExtractTextPlugin("[name].css")
   ]
 }
