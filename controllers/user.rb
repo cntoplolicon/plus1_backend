@@ -70,7 +70,7 @@ post '/users' do
   update_user_attributes(@user)
 
   status 201
-  jbuilder :current_user
+  rabl :current_user
 end
 
 post '/security_codes/account' do
@@ -142,7 +142,7 @@ put '/users/:user_id' do
   @user = User.find(params[:user_id])
   update_user_attributes(@user)
 
-  jbuilder :current_user
+  rabl :current_user
 end
 
 post '/sign_in' do
@@ -164,7 +164,7 @@ post '/sign_in' do
   user.update(access_token: generate_access_token)
   @user = user
   p @user.attributes
-  jbuilder :current_user
+  rabl :current_user
 end
 
 post '/users/:user_id/sign_out' do
@@ -177,5 +177,5 @@ end
 get '/users/:user_id' do
   validate_access_token
   content_type :json
-  jbuilder :current_user
+  rabl :current_user
 end

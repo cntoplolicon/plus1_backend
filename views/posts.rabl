@@ -1,0 +1,2 @@
+collection @posts
+extends 'post'

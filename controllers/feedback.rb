@@ -7,7 +7,3 @@ post '/feedbacks' do
   halt 400, json(errors: feedback.errors) unless feedback.save
   return 201, feedback.to_json
 end
-
-get '/feedbacks' do
-  json(Feedback.all)
-end

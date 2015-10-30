@@ -21,19 +21,21 @@ post '/users/:user_id/posts' do
     Infection.create(new_infections_params)
   end
 
-  return 201, post.to_json(except: :updated_at, include: :post_pages)
+  status 201
+  @post = post
+  rabl :post
 end
 
 get '/users/:author_id/posts' do
   validate_access_token
-  posts = Post.where(user_id: params[:author_id]).joins(:post_pages, :user)
+  @posts = Post.where(user_id: params[:author_id]).joins(:post_pages, :user)
     .includes(:post_pages, :user).order(created_at: :desc)
-  content_type :json
-  posts.to_json(except: :updated_at, include: {post_pages: {}, user: {except: User.private_attributes}})
+  render :rabl, :posts
 end
 
 post '/users/:user_id/infections/:infection_id/post_view' do
   validate_access_token
+
   ActiveRecord::Base.transaction do
     infection = @user.infections.find(params[:infection_id])
     halt 409 unless infection.active
@@ -57,18 +59,19 @@ post '/users/:user_id/infections/:infection_id/post_view' do
 
       Post.where(id: infection.post_id).update_all('spreads_count = spreads_count + 1')
     end
+
+    @post_view = post_view
   end
 
-  return 201, post_view.to_json
+  render :rabl, :post_view
 end
 
 get '/users/:user_id/infections/active' do
   validate_access_token
-  infections = Infection.where(user_id: @user.id, active: true)
+  @infections = Infection.where(user_id: @user.id, active: true)
     .joins(post: :user).includes(post: [:user, :post_pages]).order(:id).limit(1000)
 
-  content_type :json
-  infections.to_json(include: {post: {include: {user: {except: User.private_attributes}, post_pages: {}}}})
+  render :rabl, :infections
 end
 
 post '/posts/:post_id/comments' do
@@ -88,22 +91,21 @@ post '/posts/:post_id/comments' do
     Bookmark.where(bookmark_params).first_or_initialize(bookmark_params).save
 
     replied_user = reply_to ? reply_to.user : post.user
-    comment_json = comment.to_json(include: {user: {except: User.private_attributes}})
+    @comment = comment
+    comment_json = render :rabl, :comment
     if replied_user.id != @user.id
       notification_content = build_notification_content(replied_user.id, 'comment', comment_json)
       publish_notification('user_' + replied_user.id.to_s, notification_content)
     end
+
     return 201, comment_json
   end
 end
 
 get '/posts/:post_id/comments' do
   validate_access_token
-  content_type :json
-  comments = Comment.where(post_id: params[:post_id]).joins(:user).includes(:user).order(:created_at)
-
-  content_type :json
-  comments.to_json(include: {user: {except: User.private_attributes}})
+  @comments = Comment.where(post_id: params[:post_id]).joins(:user).includes(:user).order(:created_at)
+  render :rabl, :comments
 end
 
 post '/users/:user_id/bookmarks' do
@@ -116,34 +118,34 @@ post '/users/:user_id/bookmarks' do
   bookmark = Bookmark.where(bookmark_params).first_or_initialize(bookmark_params)
   bookmark.save
 
-  return 201, bookmark.to_json
+  @bookmark = bookmark
+  status 201
+  render :rabl, :bookmark
 end
 
 delete '/users/:user_id/bookmarks/:post_id' do
   validate_access_token
   Bookmark.where(user_id: @user.id, post_id: params[:post_id]).destroy_all
-  json(status: 'success')
+  success
 end
 
 get '/users/:user_id/bookmarks' do
   validate_access_token
-  bookmarked_posts = Post.joins(:bookmarks, :post_pages, :user).includes(:bookmarks, :post_pages, :user)
+  @posts = Post.joins(:bookmarks, :post_pages, :user).includes(:bookmarks, :post_pages, :user)
     .where(bookmarks: {user_id: @user.id}).order('bookmarks.created_at desc')
-  bookmarked_posts.to_json(include: {post_pages: {}, user: {except: User.private_attributes}})
+  render :rabl, :posts
 end
 
 get '/posts/:post_id' do
   validate_access_token
-  post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
-  content_type :json
-  user_json_options = {except: User.private_attributes}
-  post.to_json(include: {user: user_json_options, comments: {include: {user: user_json_options}}, post_pages: {}})
+  @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
+  render :rabl, :post_with_comments
 end
 
 get '/recommendations' do
   validate_access_token
-  posts = Post.where.not(recommendation: nil).joins(:user, :post_pages).includes(:user, :post_pages)
+  @posts = Post.where.not(recommendation: nil).joins(:user, :post_pages).includes(:user, :post_pages)
     .order(recommendation: :desc, created_at: :desc)
   content_type :json
-  posts.to_json(include: {user: {except: User.private_attributes}, post_pages: {}})
+  render :rabl, :posts
 end

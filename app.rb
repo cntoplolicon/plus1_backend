@@ -2,8 +2,8 @@ require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/json'
 require 'sinatra/config_file'
-require 'sinatra/jbuilder'
 require 'net/http'
+require 'rabl'
 require 'byebug' if Sinatra::Base.development?
 
 set :environments, %w(development test production staging)
@@ -18,18 +18,24 @@ Dir['./controllers/*.rb'].each do |f|
 end
 
 Time.zone_default = Time.find_zone('Beijing')
+Rabl.register!
+set :rabl, format: :json
+Rabl.configure do |config|
+  config.include_json_root = false
+  config.include_child_root = false
+end
 
 get '/' do
   send_file File.join(settings.public_folder, 'index.html')
 end
 
 get '/app_info' do
-  @app_info = {version_code: 1}
-  jbuilder :app_info
+  json version_code: 1
 end
 
 helpers do
   def image_url(path)
+    return nil unless path
     settings.cdn[:hosts].sample + path
   end
 end
