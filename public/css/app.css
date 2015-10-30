@@ -1,3 +1,41 @@
-body {
-  background-color: black;
+body, div {
+  margin: 0;
+  line-height: 0;
+}
+
+.download {
+  position: absolute;
+  top: 332px;
+  left: 252px;
+}
+
+.foot {
+  height: 100px;
+  width: 100%;
+  min-width: 1440px;
+  margin: auto;
+  display: inline-block;
+  background-color: #f7f7f7;
+}
+
+.foot p {
+  text-align: center;
+  color: #777;
+}
+
+.image-container {
+  position: relative;
+  width: 1440px;
+}
+
+.center-block {
+  display: block;
+}
+
+.background-yellow {
+  background-color: #fed724;
+}
+
+.background-grey {
+  background-color: #f7f7f7;
 }
