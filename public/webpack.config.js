@@ -3,7 +3,7 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin")
 module.exports = {
   entry: {
     admin: './js/admin.jsx',
-    app: './js/app.js'
+    app: './js/app.jsx'
   },
   output: {
     path: './dist',

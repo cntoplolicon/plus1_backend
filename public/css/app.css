@@ -1,3 +1,111 @@
+body,
+html,
+div,
+a,
+span,
+img {
+  margin: 0;
+  line-height: 0;
+}
+
+.download {
+  position: absolute;
+  top: 332px;
+  left: 252px;
+}
+
+.foot {
+  height: 100px;
+  width: 100%;
+  min-width: 1440px;
+  margin: auto;
+  display: inline-block;
+  background-color: #f7f7f7;
+}
+
+.foot p {
+  text-align: center;
+  color: #777;
+  font-size: 16px;
+}
+
+.image-container {
+  position: relative;
+  width: 1440px;
+}
+
+.center-block {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.background-yellow {
+  background-color: #fed724;
+}
+
+.background-grey {
+  background-color: #f7f7f7;
+}
+
+.qrcode {
+  position: absolute;
+  ;
+  top: 284px;
+  left: 608px;
+}
+
+html,
 body {
-  background-color: black;
+  font-size: 20px;
+}
+
+a:focus {
+  outline: none
+}
+
+a {
+  text-decoration: none;
+}
+
+.block {
+  display: block;
+}
+
+.page {
+  position: relative;
+  overflow: hidden;
+  width: 16rem;
+  margin: 0 auto;
+}
+
+.btn0 {
+  position: absolute;
+  top: 19rem;
+  left: 15%;
+  width: 7rem;
+}
+
+@media only screen and (max-width: 360px) and (min-width: 321px) {
+  html {
+    font-size: 22.5px
+  }
+}
+
+@media only screen and (max-width: 380px) and (min-width: 361px) {
+  html {
+    font-size: 23.4px
+  }
+}
+
+@media only screen and (max-width: 415px) and (min-width: 381px) {
+  html {
+    font-size: 25.9px;
+  }
+}
+
+@media only screen and (min-width: 415px) {
+  html {
+    font-size: 37.5px;
+  }
 }
