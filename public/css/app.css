@@ -41,3 +41,9 @@ body, div {
 .background-grey {
   background-color: #f7f7f7;
 }
+
+.qrcode {
+  position: absolute;;
+  top: 284px;
+  left: 608px;
+}

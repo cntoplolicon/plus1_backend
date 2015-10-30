@@ -4,7 +4,6 @@ const {Button, Input, Table} = require('react-bootstrap')
 const $ = require('jquery')
 
 const UsersTable = React.createClass({
-  
   getGenderText: function(gender) {
     switch (gender) {
       case 1:
