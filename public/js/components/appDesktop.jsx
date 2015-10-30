@@ -1,4 +1,5 @@
 const React = require('react')
+const QRCode = require('qrcode-npm')
 
 module.exports = React.createClass({
   render: function() {
@@ -11,8 +12,7 @@ module.exports = React.createClass({
             <a href="/plusone.apk" className="download">
               <img src="../images/download.png" />
             </a>
-            <div className="qrcode" ref="qrcode">
-            </div>
+            <div className="qrcode" dangerouslySetInnerHTML={{__html: this.createQrcode()}} />
           </div>
         </div>
         <img className="center-block" src="../images/introduction_1.png" />
@@ -31,8 +31,11 @@ module.exports = React.createClass({
     )
   },
 
-  componentDidMount: function() {
-    console.log('sdjfklsdjflsdfjl')
-    console.log(this.refs.qrcode)
+  createQrcode: function() {
+    var qr = QRCode.qrcode(4, 'M');
+    var downloadUrl = window.location.protocol + '//' + window.location.host + '/plusone.apk';
+    qr.addData(downloadUrl);
+    qr.make();
+    return qr.createImgTag(5);
   }
 })
