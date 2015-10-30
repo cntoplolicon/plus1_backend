@@ -61,6 +61,7 @@ module.exports = React.createClass({
     $.ajax({
       url: url,
       method: 'POST',
+      dataType: 'json',
       processData: false,
       contentType: false,
       data: data,

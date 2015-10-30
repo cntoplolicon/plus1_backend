@@ -15,35 +15,30 @@ before '/admin/*' do
 end
 
 get '/admin/users' do
-  users = User.all
+  @users = User.all
   search = params[:search]
-  users = users.where('username like ? or nickname like ?', "%#{search}%", "%#{search}%").limit(100) if search
+  @users = @users.where('username like ? or nickname like ?', "%#{search}%", "%#{search}%").limit(100) if search
 
-  content_type :json
-  users.to_json(except: User.private_attributes)
+  render :rabl, :admin_users
 end
 
 get '/admin/users/:user_id' do
-  user = User.where(id: params[:user_id]).includes(posts: :post_pages).take
-  content_type :json
-  user.to_json(except: User.private_attributes, include: {posts: {include: :post_pages}})
+  @user = User.where(id: params[:user_id]).includes(posts: :post_pages).take
+  render :rabl, :admin_user
 end
 
 get '/admin/feedbacks' do
-  feedbacks = Feedback.includes(:user).joins(:user).order(created_at: :desc)
+  @feedbacks = Feedback.includes(:user).joins(:user).order(created_at: :desc)
   username = params[:username]
-  feedbacks = feedbacks.where(users: {username: username}) if username
-  feedbacks = feedbacks.limit(1000) unless username
+  @feedbacks = @feedbacks.where(users: {username: username}) if username
+  @feedbacks = @feedbacks.limit(1000) unless username
 
-  content_type :json
-  feedbacks.to_json(include: {user: {except: User.private_attributes}})
+  render :rabl, :admin_feedbacks
 end
 
 get '/admin/posts/:post_id' do
-  post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
-  content_type :json
-  user_json_options = {except: User.private_attributes}
-  post.to_json(include: {user: user_json_options, comments: {include: {user: user_json_options}}, post_pages: {}})
+  @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
+  render :rabl, :post_with_comments
 end
 
 post '/admin/posts/:post_id/comments' do
@@ -60,18 +55,14 @@ post '/admin/posts/:post_id/comments' do
     Post.where(id: post.id).update_all('comments_count = comments_count + 1')
   end
 
-  post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
-  content_type :json
-  user_json_options = {except: User.private_attributes}
-  post.to_json(include: {user: user_json_options, comments: {include: {user: user_json_options}}, post_pages: {}})
+  @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
+  render :rabl, :post_with_comments
 end
 
 put '/admin/posts/:post_id/recommendation' do
-  post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
-  post.update(params.deep_symbolize_keys.slice(:recommendation))
-  content_type :json
-  user_json_options = {except: User.private_attributes}
-  post.to_json(include: {user: user_json_options, comments: {include: {user: user_json_options}}, post_pages: {}})
+  @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
+  @post.update(params.deep_symbolize_keys.slice(:recommendation))
+  render :rabl, :post_with_comments
 end
 
 post '/admin/users/:user_id/posts' do
@@ -112,7 +103,6 @@ post '/admin/users/:user_id/posts' do
     Infection.create(new_infections_params)
   end
 
-  user = User.where(id: params[:user_id]).includes(posts: :post_pages).take
-  content_type :json
-  user.to_json(except: User.private_attributes, include: {posts: {include: :post_pages}})
+  @user = User.where(id: params[:user_id]).includes(posts: :post_pages).take
+  render :rabl, :admin_user
 end

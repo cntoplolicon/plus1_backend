@@ -1,5 +1,4 @@
 const React = require('react')
-const imageUrl = require('../imageUrl')
 
 module.exports = React.createClass({
   render: function() {
@@ -7,6 +6,6 @@ module.exports = React.createClass({
     if (!avatar) {
       return null;
     }
-    return <img className="avatar" src={imageUrl(avatar)} />
+    return <img className="avatar" src={avatar} />
   }
 })
