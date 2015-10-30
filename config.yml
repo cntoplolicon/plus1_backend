@@ -12,7 +12,9 @@ aws:
 
 s3:
   bucket: 'image.oneplusapp.com'
-  host: 'http://image.oneplusapp.com/'
+
+cdn:
+  hosts: ['http://image.oneplusapp.com/']
 
 yunba:
   app_key: '561b7f3d860409b810e0d11a'

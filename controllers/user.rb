@@ -37,10 +37,6 @@ def validate_access_token
   halt 403 if !@user || params[:access_token] != @user.access_token
 end
 
-def user_info_without_passwords(user)
-  user.to_json(except: User.password_attributes)
-end
-
 def update_user_attributes(user)
   user.resetting_password = !user.id || params[:password]
 
@@ -70,11 +66,11 @@ def update_user_attributes(user)
 end
 
 post '/users' do
-  user = User.new(can_infect: 10_000, access_token: generate_access_token)
-  update_user_attributes(user)
+  @user = User.new(can_infect: 10_000, access_token: generate_access_token)
+  update_user_attributes(@user)
 
-  content_type :json
-  return 201, user_info_without_passwords(user)
+  status 201
+  jbuilder :current_user
 end
 
 post '/security_codes/account' do
@@ -89,7 +85,7 @@ post '/security_codes/account' do
 
   security_code = send_security_code(username)
   if Sinatra::Base.production?
-    json(status: 'success')
+    success
   else
     json(security_code: security_code)
   end
@@ -108,7 +104,7 @@ post '/security_codes/password' do
 
   security_code = send_security_code(username)
   if Sinatra::Base.production?
-    json(status: 'success')
+    success
   else
     json(security_code: security_code)
   end
@@ -129,7 +125,7 @@ post '/security_codes/verify' do
   end
   halt 400, json(errors: user_security_code.errors) if user_security_code.errors.any?
   user_security_code.update(verified: true)
-  json(status: 'success')
+  success
 end
 
 put '/users/password' do
@@ -139,15 +135,14 @@ put '/users/password' do
   user.password = params[:password]
   halt 400, json(errors: user.errors) unless user.save
   user_security_code.destroy
-  json(status: 'success')
+  success
 end
 
 put '/users/:user_id' do
-  user = User.find(params[:user_id])
-  update_user_attributes(user)
+  @user = User.find(params[:user_id])
+  update_user_attributes(@user)
 
-  content_type :json
-  user_info_without_passwords(user)
+  jbuilder :current_user
 end
 
 post '/sign_in' do
@@ -167,19 +162,20 @@ post '/sign_in' do
   end
 
   user.update(access_token: generate_access_token)
-  content_type :json
-  user_info_without_passwords(user)
+  @user = user
+  p @user.attributes
+  jbuilder :current_user
 end
 
 post '/users/:user_id/sign_out' do
   validate_access_token
   @user.update(access_token: nil)
   content_type :json
-  json(status: 'success')
+  success
 end
 
 get '/users/:user_id' do
   validate_access_token
   content_type :json
-  user_info_without_passwords(@user)
+  jbuilder :current_user
 end

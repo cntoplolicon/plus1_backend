@@ -27,3 +27,13 @@ get '/app_info' do
   @app_info = {version_code: 1}
   jbuilder :app_info
 end
+
+helpers do
+  def image_url(path)
+    settings.cdn[:hosts].sample + path
+  end
+end
+
+def success
+  json(status: 'success')
+end
