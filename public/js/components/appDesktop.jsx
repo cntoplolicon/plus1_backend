@@ -33,7 +33,7 @@ module.exports = React.createClass({
 
   createQrcode: function() {
     var qr = QRCode.qrcode(4, 'M');
-    var downloadUrl = window.location.protocol + '//' + window.location.host + '/plusone.apk';
+    var downloadUrl = 'http://download.oneplusapp.com/plus-one.apk'
     qr.addData(downloadUrl);
     qr.make();
     return qr.createImgTag(5);
