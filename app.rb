@@ -39,12 +39,3 @@ end
 get '/' do
   send_file File.join(settings.public_folder, 'index.html')
 end
-
-get '/app_info' do
-  @release = AppRelease.first
-  if @release
-    render :rabl, :app_release
-  else
-    json version_code: 0
-  end
-end
