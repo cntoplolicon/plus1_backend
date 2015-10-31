@@ -11,7 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151021055314) do
+ActiveRecord::Schema.define(version: 20151031015239) do
+
+  create_table "app_releases", force: :cascade do |t|
+    t.integer  "version_code", limit: 4
+    t.text     "features",     limit: 65535
+    t.string   "download_url", limit: 255
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "app_releases", ["version_code"], name: "index_app_releases_on_version_code", unique: true, using: :btree
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false

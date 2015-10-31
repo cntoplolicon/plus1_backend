@@ -25,14 +25,6 @@ Rabl.configure do |config|
   config.include_child_root = false
 end
 
-get '/' do
-  send_file File.join(settings.public_folder, 'index.html')
-end
-
-get '/app_info' do
-  json version_code: 1
-end
-
 helpers do
   def image_url(path)
     return nil unless path
@@ -42,4 +34,17 @@ end
 
 def success
   json(status: 'success')
+end
+
+get '/' do
+  send_file File.join(settings.public_folder, 'index.html')
+end
+
+get '/app_info' do
+  @release = AppRelease.first
+  if @release
+    render :rabl, :app_release
+  else
+    json version_code: 0
+  end
 end
