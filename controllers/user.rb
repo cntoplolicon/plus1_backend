@@ -163,7 +163,6 @@ post '/sign_in' do
 
   user.update(access_token: generate_access_token)
   @user = user
-  p @user.attributes
   rabl :current_user
 end
 
