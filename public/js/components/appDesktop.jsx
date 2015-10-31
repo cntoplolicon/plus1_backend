@@ -9,7 +9,7 @@ module.exports = React.createClass({
         <div className="background-yellow">
           <div className="image-container center-block">
             <img className="center-block" src="../images/introduction_main.png" />
-            <a href="/plusone.apk" className="download">
+            <a href="http://download.oneplusapp.com/plus-one.apk" className="download">
               <img src="../images/download.png" />
             </a>
             <div className="qrcode" dangerouslySetInnerHTML={{__html: this.createQrcode()}} />

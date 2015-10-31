@@ -6,7 +6,7 @@ module.exports = React.createClass({
       <div>
           <div className="page">
             <img className="block" width="100%" src="../images/mobile_background.png" />
-            <a href="/plusone.apk">
+            <a href="http://download.oneplusapp.com/plus-one.apk">
               <img className="btn0" src="../images/mobile_android.png" />
             </a>
           </div>
