@@ -32,7 +32,7 @@ module.exports = React.createClass({
   },
 
   submitNewRelease: function() {
-    var url = '/app_release/android'
+    var url = '/admin/app_release/android'
 
     var data = new FormData()
     var message = this.refs.message.getValue()

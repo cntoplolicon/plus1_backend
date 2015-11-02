@@ -10,7 +10,7 @@ get '/app_release/android' do
   end
 end
 
-post '/app_release/android' do
+post '/admin/app_release/android' do
   @app_release = AppRelease.first_or_initialize
   @app_release.message = params[:message]
 
