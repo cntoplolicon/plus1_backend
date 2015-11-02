@@ -39,12 +39,3 @@ end
 get '/' do
   send_file File.join(settings.public_folder, 'index.html')
 end
-
-get '/app_release' do
-  @app_release = AppRelease.first
-  if @app_release
-    json @app_release
-  else
-    json version_code: 0
-  end
-end

@@ -10,6 +10,7 @@ const Users = require('./components/users')
 const User = require('./components/user')
 const Post = require('./components/post')
 const Feedbacks = require('./components/feedbacks')
+const AndroidRelease = require('./components/androidRelease.jsx')
 
 var Routes = (
   <Router>
@@ -18,6 +19,7 @@ var Routes = (
       <Route path="/users/:userId" component={User} />
       <Route path="/posts/:postId" component={Post} />
       <Route path="/feedbacks" component={Feedbacks} />
+      <Route path="/android_release" component={AndroidRelease} />
     </Route>
   </Router>
 )

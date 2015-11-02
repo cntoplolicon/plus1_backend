@@ -15,6 +15,9 @@ module.exports = React.createClass({
             <LinkContainer to="/feedbacks">
               <NavItem>Feedbacks</NavItem>
             </LinkContainer>
+            <LinkContainer to="/android_release">
+              <NavItem>Android Release</NavItem>
+            </LinkContainer>
           </Nav>
         </Navbar>
         <div className="container">

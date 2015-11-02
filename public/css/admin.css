@@ -29,3 +29,7 @@ img.avatar {
 .thumbnail.recommended {
   border: 2px solid #FEB724;
 }
+
+*[hidden] {
+  display: none !important;
+}
