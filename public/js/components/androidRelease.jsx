@@ -13,7 +13,7 @@ module.exports = React.createClass({
   },
 
   loadReleaseFromServer: function() {
-    var url = '/app_release/android'
+    var url = '/admin/app_release/android'
     $.ajax({
       url: url,
       dataType: 'json',
