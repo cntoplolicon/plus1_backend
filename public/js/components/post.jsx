@@ -31,7 +31,7 @@ module.exports = React.createClass({
   },
 
   getInitialState: function() {
-    return {progress: 0}
+    return {progress: 0, requesting: false}
   },
 
   componentDidMount: function() {
@@ -97,6 +97,7 @@ module.exports = React.createClass({
     var content = this.refs.comment.getValue()
     var url = `/admin/posts/${this.props.params.postId}/comments`
 
+    this.setState({requesting: true})
     var replyToId = this.state.replyTo ? this.state.replyTo.id : undefined
     var data = {username: username, password: password, content: content, reply_to: replyToId}
     $.ajax({
@@ -105,13 +106,15 @@ module.exports = React.createClass({
       dataType: 'json',
       data: data,
       success: function(data) {
-        this.setState({post: data, comments: this.createCommentsTree(data)})
+        this.setState({post: data, comments: this.createCommentsTree(data), requesting: false, replyTo: undefined})
+        this.refs.form.reset()
       }.bind(this),
       error: function(xhr, status, err) {
         if (xhr.status === 403) {
           alert("Username or password incorrect, or it's not an admin account")
         }
         console.error(url, status, err.toString())
+        this.setState({requesting: false})
       }.bind(this)
     })
 
@@ -192,7 +195,7 @@ module.exports = React.createClass({
               </form>
             </Panel>
             <Panel defaultExpanded header="New Comment">
-              <form className="form-horizontal">
+              <form className="form-horizontal" ref="form">
                 <Input type="text" label="Username" placeholder="Admin account username"
                   labelClassName="col-xs-3" wrapperClassName="col-xs-9" ref="username" />
                 <Input type="password" label="Password" placeholder="Admin account password"
@@ -201,7 +204,7 @@ module.exports = React.createClass({
                   labelClassName="col-xs-3" wrapperClassName="col-xs-9" ref="comment"/>
                 <div className="form-group">
                   <Col xs={10} xsOffset={2}>
-                    <Button bsStyle="primary" onClick={this.submitNewComment}>New Comment</Button>
+                    <Button bsStyle="primary" onClick={this.submitNewComment} disabled={this.state.requesting}>New Comment</Button>
                     {cancelReplyButton}
                   </Col>
                 </div>

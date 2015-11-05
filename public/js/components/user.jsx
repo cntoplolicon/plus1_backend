@@ -31,7 +31,7 @@ module.exports = React.createClass({
   },
 
   getInitialState: function() {
-    return {progress: 0}
+    return {progress: 0, requesting: false}
   },
 
   componentDidMount: function() {
@@ -57,6 +57,7 @@ module.exports = React.createClass({
       data.append('post_pages[][image]', image)
     }
 
+    this.setState({requesting: true})
     var url = `/admin/users/${this.props.params.userId}/posts`
     $.ajax({
       url: url,
@@ -66,13 +67,15 @@ module.exports = React.createClass({
       contentType: false,
       data: data,
       success: function(data) {
-        this.setState({user: data})
+        this.setState({user: data, requesting: false})
+        this.refs.form.reset()
       }.bind(this),
       error: function(xhr, status, err) {
         if (xhr.status === 403) {
           alert("Username or password incorrect, or it's not an admin account")
         }
         console.error(url, status, err.toString())
+        this.setState({requesting: false})
       }.bind(this)
     })
   },
@@ -115,13 +118,13 @@ module.exports = React.createClass({
         </div>
         <Grid>{rows}</Grid>
         <Panel defaultExpanded header="New Post">
-          <form className="form-horizontal">
+          <form className="form-horizontal" ref="form">
             <Input type="password" label="Password" placeholder="Admin account password" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="password" />
             <Input type="file" label="Upload an image" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="image" />
             <Input type="textarea" label="Say somehting" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="text" />
             <div className="form-group">
               <Col xs={10} xsOffset={2}>
-                <Button bsStyle="primary" onClick={this.submitNewPost}>New Post</Button>
+                <Button bsStyle="primary" onClick={this.submitNewPost} disabled={this.state.requesting}>New Post</Button>
               </Col>
             </div>
           </form>
