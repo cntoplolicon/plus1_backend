@@ -123,6 +123,12 @@ post '/users/:user_id/bookmarks' do
   render :rabl, :bookmark
 end
 
+delete '/posts/:post_id/comments/:comment_id' do
+  validate_access_token
+  Comment.find(params[:comment_id]).update(deleted: true)
+  success
+end
+
 delete '/users/:user_id/bookmarks/:post_id' do
   validate_access_token
   Bookmark.where(user_id: @user.id, post_id: params[:post_id]).destroy_all
