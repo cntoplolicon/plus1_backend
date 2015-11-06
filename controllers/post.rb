@@ -126,8 +126,10 @@ end
 
 delete '/posts/:post_id/comments/:comment_id' do
   validate_access_token
-  Comment.find(params[:comment_id]).update(deleted: true)
-  success
+  @comment = Comment.find(params[:comment_id])
+  halt 400 unless @comment.post_id == params[:post_id].to_i
+  @comment.update(deleted: true)
+  render :rabl, :comment
 end
 
 delete '/users/:user_id/bookmarks/:post_id' do
