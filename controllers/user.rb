@@ -188,8 +188,9 @@ post '/users/:user_id/account_info' do
   AccountInfo.transaction do
     account_info.attributes = account_info_params
     if params[:av_installation_id]
-      AccountInfo.where.not(av_installation_id: params[:av_installation_id])
-        .update_all(av_installation_id: nil)
+      AccountInfo.where(av_installation_id: params[:av_installation_id])
+        .where.not(user_id: @user.id)
+        .update_all(av_installation_id: nil, updated_at: Time.zone.now)
     end
     account_info.save(validate: false)
   end
