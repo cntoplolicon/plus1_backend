@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151106022511) do
+ActiveRecord::Schema.define(version: 20151106055323) do
+
+  create_table "account_infos", force: :cascade do |t|
+    t.integer  "user_id",            limit: 4,   null: false
+    t.string   "av_installation_id", limit: 255
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "account_infos", ["user_id"], name: "index_account_infos_on_user_id", using: :btree
 
   create_table "app_releases", force: :cascade do |t|
     t.integer  "version_code", limit: 4
@@ -131,6 +140,7 @@ ActiveRecord::Schema.define(version: 20151106022511) do
   add_index "users", ["nickname"], name: "index_users_on_nickname", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
+  add_foreign_key "account_infos", "users"
   add_foreign_key "bookmarks", "posts"
   add_foreign_key "bookmarks", "users"
   add_foreign_key "comments", "comments", column: "reply_to_id"

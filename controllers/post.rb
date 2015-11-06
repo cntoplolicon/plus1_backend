@@ -76,12 +76,12 @@ end
 
 post '/posts/:post_id/comments' do
   validate_access_token
-  reply_to = Comment.find(params[:reply_to]) if params[:reply_to]
+  post = Post.find(params[:post_id])
+  reply_to = post.comments.find(params[:reply_to]) if params[:reply_to]
   content = params[:content]
   halt 400 unless content
 
   Post.transaction do
-    post = Post.find(params[:post_id])
     comment_params = {user_id: @user.id, content: content}
     comment_params[:reply_to_id] = reply_to.id if reply_to
     comment = post.comments.create(comment_params)
@@ -93,9 +93,10 @@ post '/posts/:post_id/comments' do
     replied_user = reply_to ? reply_to.user : post.user
     @comment = comment
     comment_json = render :rabl, :comment
-    if replied_user.id != @user.id
+    if replied_user.id != @user.id && replied_user.account_info &&
+        replied_user.account_info.av_installation_id
       notification_content = build_notification_content(replied_user.id, 'comment', comment_json)
-      publish_notification('user_' + replied_user.id.to_s, notification_content)
+      publish_notification(replied_user.account_info.av_installation_id, notification_content)
     end
 
     return 201, comment_json
@@ -152,6 +153,5 @@ get '/recommendations' do
   validate_access_token
   @posts = Post.where.not(recommendation: nil).joins(:user, :post_pages).includes(:user, :post_pages)
     .order(recommendation: :desc, created_at: :desc)
-  content_type :json
   render :rabl, :posts
 end

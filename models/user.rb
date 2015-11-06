@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
   validates_format_of :password, with: /\A[ -~]{6,20}\z/, if: :resetting_password
   validates_presence_of :nickname
 
+  has_one :account_info
   has_many :posts, -> { order :created_at }
   has_many :infections
   has_many :active_infections, -> { order :created_at }

@@ -1,20 +1,23 @@
 require 'net/http'
 
-def publish_notification(channel, content)
+def publish_notification(installationId, content)
   Thread.new do
-    uri = URI(settings.yunba[:api_uri])
+    uri = URI(settings.leancloud[:push_uri])
     req = Net::HTTP::Post.new(uri)
     req['Content-Type'] = 'application/json'
-    payload = {method: 'publish', appkey: settings.yunba[:app_key],
-               seckey: settings.yunba[:secret_key], topic: channel, msg: content}
+    req['X-LC-Id'] = settings.leancloud[:app_id]
+    req['X-LC-Key'] = settings.leancloud[:app_key]
+    payload = {where: {installationId: installationId},
+               data: {content: content, action: 'com.oneplusapp.NOTIFICATION'}}
     req.body = payload.to_json
-    Net::HTTP.start(uri.hostname, uri.port) do |http|
-      http.request(req)
+    http = Net::HTTP.new(uri.hostname, uri.port)
+    http.use_ssl = true
+    http.start do |h|
+      h.request(req)
     end
   end
 end
 
 def build_notification_content(user_id, type, message)
-  user_id ||= 0
-  {user_id: user_id, type: type, publish_time: Time.zone.now, content: message}.to_json
+  {user_id: user_id || 0, type: type, publish_time: Time.zone.now, content: message}.to_json
 end

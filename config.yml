@@ -32,10 +32,10 @@ cdn:
     hosts: ['http://image.oneplusapp.com/']
     storage_host: 'http://download.oneplusapp.com/'
 
-yunba:
-  app_key: '561b7f3d860409b810e0d11a'
-  secret_key: 'sec-COCArBzu3fmEReMbrxsOByddKzMEgw8f5FqYo6tmHwA4Hatl'
-  api_uri: 'http://rest.yunba.io:8080'
+leancloud:
+  app_id: 'uRHAcbn8PbOthR28S6hd6ArI'
+  app_key: 'HQmVcG0WJ67OiCcV2OnhiBew'
+  push_uri: 'https://leancloud.cn/1.1/push'
 
 admin:
   username: '+1'

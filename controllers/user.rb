@@ -168,13 +168,30 @@ end
 
 post '/users/:user_id/sign_out' do
   validate_access_token
-  @user.update(access_token: nil)
-  content_type :json
+  User.transaction do
+    @user.update(access_token: nil)
+    @user.account_info.update(av_installation_id: nil) if @user.account_info
+  end
   success
 end
 
 get '/users/:user_id' do
   validate_access_token
-  content_type :json
   rabl :current_user
+end
+
+post '/users/:user_id/account_info' do
+  validate_access_token
+  account_info = @user.account_info || @user.build_account_info
+
+  account_info_params = params.deep_symbolize_keys.slice(:av_installation_id)
+  AccountInfo.transaction do
+    account_info.attributes = account_info_params
+    if params[:av_installation_id]
+      AccountInfo.where.not(av_installation_id: params[:av_installation_id])
+        .update_all(av_installation_id: nil)
+    end
+    account_info.save(validate: false)
+  end
+  success
 end
