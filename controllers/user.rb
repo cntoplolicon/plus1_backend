@@ -69,7 +69,7 @@ post '/users' do
   @user = User.new(can_infect: 10_000, access_token: generate_access_token)
   update_user_attributes(@user)
 
-  posts_for_new_user_id = Post.where.not(recommendation: nil).limit(10).pluck(:id)
+  posts_for_new_user_id = Post.where.not(recommendation: nil).order(recommendation: :desc).limit(10).pluck(:id)
   new_user_infection_params = posts_for_new_user_id.map do |post_id|
     {user_id: @user.id, post_id: post_id, active: true }
   end
