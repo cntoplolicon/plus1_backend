@@ -1,6 +1,6 @@
 object @post
 
-attributes :id, :spreads_count, :views_count, :comments_count, :recommendation, :created_at
+attributes :id, :spreads_count, :views_count, :comments_count, :bookmarked, :recommendation, :created_at
 child :post_pages do
   attributes :id, :text, :image_width, :image_height
   node :image do |post|

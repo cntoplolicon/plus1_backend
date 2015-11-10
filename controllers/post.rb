@@ -1,3 +1,10 @@
+def set_bookmarked(posts, user)
+  bookmarked_post_ids = Set.new(Bookmark.where(user_id: user.id).pluck(:post_id))
+  posts.each do |post|
+    post.bookmarked = bookmarked_post_ids.include?(post.id)
+  end
+end
+
 post '/users/:user_id/posts' do
   validate_access_token
 
@@ -30,6 +37,7 @@ get '/users/:author_id/posts' do
   validate_access_token
   @posts = Post.where(user_id: params[:author_id]).joins(:post_pages, :user)
     .includes(:post_pages, :user).order(created_at: :desc)
+  set_bookmarked(@posts, @user)
   render :rabl, :posts
 end
 
@@ -68,8 +76,14 @@ end
 
 get '/users/:user_id/infections/active' do
   validate_access_token
+
   @infections = Infection.where(user_id: @user.id, active: true)
     .joins(post: :user).includes(post: [:user, :post_pages]).order(:id).limit(1000)
+  bookmarked_post_ids = Set.new(Bookmark.where(user_id: @user.id).pluck(:post_id))
+
+  @infections.each do |infection|
+    infection.post.bookmarked = bookmarked_post_ids.include?(infection.post.id)
+  end
 
   render :rabl, :infections
 end
@@ -98,15 +112,10 @@ post '/posts/:post_id/comments' do
       notification_content = build_notification_content(replied_user.id, 'comment', comment_json)
       publish_notification(replied_user.account_info.av_installation_id, notification_content)
     end
-
-    return 201, comment_json
   end
-end
 
-get '/posts/:post_id/comments' do
-  validate_access_token
-  @comments = Comment.where(post_id: params[:post_id]).joins(:user).includes(:user).order(:created_at)
-  render :rabl, :comments
+  status 201
+  render :rabl, :comment_with_post
 end
 
 post '/users/:user_id/bookmarks' do
@@ -142,12 +151,16 @@ get '/users/:user_id/bookmarks' do
   validate_access_token
   @posts = Post.joins(:bookmarks, :post_pages, :user).includes(:bookmarks, :post_pages, :user)
     .where(bookmarks: {user_id: @user.id}).order('bookmarks.created_at desc')
+  @posts.each do |post|
+    post.bookmarked = true
+  end
   render :rabl, :posts
 end
 
 get '/posts/:post_id' do
   validate_access_token
   @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
+  @post.bookmarked = Bookmark.where(user_id: @user.id, post_id: @post.id).exists?
   render :rabl, :post_with_comments
 end
 
@@ -155,5 +168,6 @@ get '/recommendations' do
   validate_access_token
   @posts = Post.where.not(recommendation: nil).joins(:user, :post_pages).includes(:user, :post_pages)
     .order(recommendation: :desc, created_at: :desc)
+  set_bookmarked(@posts, @user)
   render :rabl, :posts
 end
