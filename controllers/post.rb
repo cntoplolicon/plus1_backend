@@ -118,6 +118,14 @@ post '/posts/:post_id/comments' do
   render :rabl, :comment_with_post
 end
 
+delete '/posts/:post_id/comments/:comment_id' do
+  validate_access_token
+  @comment = Comment.find(params[:comment_id])
+  halt 400 unless @comment.post_id == params[:post_id].to_i
+  @comment.update(deleted: true)
+  render :rabl, :comment
+end
+
 post '/users/:user_id/bookmarks' do
   validate_access_token
 
@@ -128,23 +136,20 @@ post '/users/:user_id/bookmarks' do
   bookmark = Bookmark.where(bookmark_params).first_or_initialize(bookmark_params)
   bookmark.save
 
-  @bookmark = bookmark
+  @post = bookmark.post
+  @post.bookmarked = true
   status 201
-  render :rabl, :bookmark
-end
-
-delete '/posts/:post_id/comments/:comment_id' do
-  validate_access_token
-  @comment = Comment.find(params[:comment_id])
-  halt 400 unless @comment.post_id == params[:post_id].to_i
-  @comment.update(deleted: true)
-  render :rabl, :comment
+  render :rabl, :post
 end
 
 delete '/users/:user_id/bookmarks/:post_id' do
   validate_access_token
-  Bookmark.where(user_id: @user.id, post_id: params[:post_id]).destroy_all
-  success
+  post_id = params[:post_id].to_i
+  Bookmark.where(user_id: @user.id, post_id: post_id).destroy_all
+
+  @post = Post.find(post_id)
+  @post.bookmarked = false
+  render :rabl, :post
 end
 
 get '/users/:user_id/bookmarks' do
