@@ -103,6 +103,7 @@ post '/posts/:post_id/comments' do
 
     bookmark_params = {user_id: @user.id, post_id: post.id}
     Bookmark.where(bookmark_params).first_or_initialize(bookmark_params).save
+    comment.post.bookmarked = true
 
     replied_user = reply_to ? reply_to.user : post.user
     @comment = comment
