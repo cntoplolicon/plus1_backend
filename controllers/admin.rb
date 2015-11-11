@@ -8,6 +8,7 @@ def validate_admin_account
 end
 
 before '/admin/*' do
+  return unless Sinatra::Base.production?
   @auth ||= Rack::Auth::Basic::Request.new(request.env)
   authenticated = @auth.provided? && @auth.basic? && @auth.credentials &&
     @auth.credentials == [settings.admin[:username], settings.admin[:password]]
