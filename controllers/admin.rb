@@ -128,11 +128,14 @@ post '/admin/app_release/android' do
     manifest = apk.manifest
     xml = Nokogiri::XML(manifest.to_xml)
     version_code = xml.root['android:versionCode'].to_i
+    version_name = xml.root['android:versionName']
     @app_release.version_code = version_code
+    @app_release.version_name = version_name
 
     path = upload_file_to_s3(params[:archive], key: params[:archive][:filename], bucket: settings.s3[:storage_bucket])
     @app_release.download_url = settings.cdn[:storage_host] + path
   end
+
 
   @app_release.save
   json @app_release
