@@ -25,7 +25,7 @@ module.exports = React.createClass({
         </div>
         <div className="foot">
           <p>©2015北京思无疆科技有限公司</p>
-          <p> 京ICP备XXXXXXXX号</p>
+          <p>京ICP备 15024750号</p>
         </div>
     </div>
     )
