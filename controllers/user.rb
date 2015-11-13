@@ -181,11 +181,6 @@ post '/users/:user_id/sign_out' do
   success
 end
 
-get '/users/:user_id' do
-  validate_access_token
-  rabl :current_user
-end
-
 post '/users/:user_id/account_info' do
   validate_access_token
   account_info = @user.account_info || @user.build_account_info
@@ -201,4 +196,11 @@ post '/users/:user_id/account_info' do
     account_info.save(validate: false)
   end
   success
+end
+
+get '/users/:user_ids' do
+  validate_access_token
+  user_ids = params[:user_ids]
+  @users = User.find(user_ids.split(';'))
+  render :rabl, :users
 end
