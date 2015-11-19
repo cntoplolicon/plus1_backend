@@ -11,13 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151112015206) do
+ActiveRecord::Schema.define(version: 20151119015252) do
 
   create_table "account_infos", force: :cascade do |t|
     t.integer  "user_id",            limit: 4,   null: false
     t.string   "av_installation_id", limit: 255
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.string   "weixin_union_id",    limit: 255
+    t.string   "qq_uid",             limit: 255
+    t.string   "sina_weibo_uid",     limit: 255
   end
 
   add_index "account_infos", ["user_id"], name: "index_account_infos_on_user_id", using: :btree

@@ -28,6 +28,7 @@ end
 helpers do
   def image_url(path)
     return nil unless path
+    return path if path.start_with?('http')
     settings.cdn[:hosts].sample + path
   end
 end

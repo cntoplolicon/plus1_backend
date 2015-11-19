@@ -65,15 +65,20 @@ def update_user_attributes(user)
   end
 end
 
-post '/users' do
-  @user = User.new(can_infect: 10_000, access_token: generate_access_token)
-  update_user_attributes(@user)
-
+def populate_new_user_with_recommendations
   posts_for_new_user_id = Post.where.not(recommendation: nil).order(recommendation: :desc).limit(10).pluck(:id)
   new_user_infection_params = posts_for_new_user_id.map do |post_id|
-    {user_id: @user.id, post_id: post_id, active: true }
+    {user_id: @user.id, post_id: post_id, active: true}
   end
   Infection.create(new_user_infection_params)
+end
+
+post '/users' do
+  User.transaction do
+    @user = User.new(can_infect: 10_000, access_token: generate_access_token)
+    update_user_attributes(@user)
+    populate_new_user_with_recommendations
+  end
 
   status 201
   rabl :current_user
@@ -169,6 +174,26 @@ post '/sign_in' do
 
   user.update(access_token: generate_access_token)
   @user = user
+  rabl :current_user
+end
+
+post '/sign_in/oauth' do
+  column = {sina: :sina_weibo_uid, qq: :qq_uid, weixin: :weixin_union_id}[params[:platform].to_sym]
+  account_info_params = {}
+  account_info_params[column] = params[:uid]
+  AccountInfo.transaction do
+    @user = User.joins(:account_info).includes(:account_info)
+      .where(account_infos: account_info_params).first
+    if @user
+      @user.update(access_token: generate_access_token)
+    else
+      user_params = params.deep_symbolize_keys.slice(:nickname, :gender, :avatar)
+        .merge(can_infect: 10_000, access_token: generate_access_token)
+      @user = User.create(user_params)
+      populate_new_user_with_recommendations
+      @user.create_account_info(account_info_params)
+    end
+  end
   rabl :current_user
 end
 

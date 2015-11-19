@@ -10,8 +10,7 @@ class User < ActiveRecord::Base
 
   has_secure_password validations: false
 
-  validates_presence_of :username
-  validates_format_of :username, with: /\A\d{11}\z/
+  validates_format_of :username, with: /\A\d{11}\z/, allow_blank: true
   validates_presence_of :password, if: :resetting_password
   validates_format_of :password, with: /\A[ -~]{6,20}\z/, if: :resetting_password
   validates_presence_of :nickname
