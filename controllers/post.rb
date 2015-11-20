@@ -33,6 +33,15 @@ post '/users/:user_id/posts' do
   rabl :post
 end
 
+delete '/users/:user_id/posts/:post_id' do
+  validate_access_token
+
+  @post = @user.posts.find(params[:post_id])
+  @post.update(deleted_by: Post::DELETED_BY_AUTHOR) if @post.deleted_by != Post::DELETED_BY_ADMIN
+  @post.bookmarked = Bookmark.where(user_id: @user.id, post_id: @post.id).exists?
+  rabl :post
+end
+
 get '/users/:author_id/posts' do
   validate_access_token
   @posts = Post.where(user_id: params[:author_id], deleted_by: nil).joins(:post_pages, :user)
