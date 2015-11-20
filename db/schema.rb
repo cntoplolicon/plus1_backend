@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120010855) do
+ActiveRecord::Schema.define(version: 20151120023055) do
 
   create_table "account_infos", force: :cascade do |t|
     t.integer  "user_id",            limit: 4,   null: false
@@ -60,6 +60,16 @@ ActiveRecord::Schema.define(version: 20151120010855) do
   add_index "comments", ["post_id"], name: "index_comments_on_post_id", using: :btree
   add_index "comments", ["reply_to_id"], name: "index_comments_on_reply_to_id", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
+
+  create_table "complains", force: :cascade do |t|
+    t.integer  "post_id",    limit: 4, null: false
+    t.integer  "user_id",    limit: 4, null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "complains", ["post_id"], name: "index_complains_on_post_id", using: :btree
+  add_index "complains", ["user_id"], name: "index_complains_on_user_id", using: :btree
 
   create_table "feedbacks", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -151,6 +161,8 @@ ActiveRecord::Schema.define(version: 20151120010855) do
   add_foreign_key "comments", "comments", column: "reply_to_id"
   add_foreign_key "comments", "posts"
   add_foreign_key "comments", "users"
+  add_foreign_key "complains", "posts"
+  add_foreign_key "complains", "users"
   add_foreign_key "infections", "post_views"
   add_foreign_key "infections", "posts"
   add_foreign_key "infections", "users"
