@@ -181,3 +181,17 @@ get '/recommendations' do
   set_bookmarked(@posts, @user)
   render :rabl, :posts
 end
+
+post '/users/:user_id/complains' do
+  validate_access_token
+
+  halt 400 unless params[:post_id]
+  post_id = params[:post_id].to_i
+
+  complain_params = {post_id: post_id, user_id: @user.id}
+  halt 409 if Complain.where(complain_params).exists?
+
+  complain = Complain.create(complain_params)
+  status 201
+  json complain
+end
