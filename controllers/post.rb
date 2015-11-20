@@ -121,7 +121,7 @@ post '/posts/:post_id/comments' do
     replied_comment_deleted = reply_to && reply_to.deleted
     @comment = comment
     comment_json = render :rabl, :comment
-    if replied_user.id != @user.id && replied_user.account_info &&
+    if replied_user.id != @user.id && replied_user.account_info && !post.deleted &&
         replied_user.account_info.av_installation_id && !replied_comment_deleted
       notification_content = build_notification_content(replied_user.id, 'comment', comment_json)
       publish_notification(replied_user.account_info.av_installation_id, notification_content)
