@@ -39,6 +39,15 @@ get '/admin/feedbacks' do
   render :rabl, :admin_feedbacks
 end
 
+get '/admin/complains' do
+  @complains = Complain.includes(:user).joins(:user).order(created_at: :desc)
+  username = params[:username]
+  @complains = @complains.where(users: {username: username}) if username
+  @complains = @complains.limit(1000) unless username
+
+  render :rabl, :admin_complains
+end
+
 get '/admin/posts/:post_id' do
   @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
   render :rabl, :post_with_comments
