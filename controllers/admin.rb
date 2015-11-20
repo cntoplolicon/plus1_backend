@@ -44,6 +44,16 @@ get '/admin/posts/:post_id' do
   render :rabl, :post_with_comments
 end
 
+post '/admin/posts/:post_id/deleted_by' do
+  @post = Post.find(params[:post_id])
+  if @post.deleted_by == Post::DELETED_BY_AUTHOR
+    @post.errors.add(:post_id, 'deleted by author')
+    halt 400, json(@posts.errors)
+  end
+  @post.update(deleted_by: params[:deleted_by])
+  render :rabl, :post_with_comments
+end
+
 post '/admin/posts/:post_id/comments' do
   validate_admin_account
   reply_to = Comment.find(params[:reply_to]) if params[:reply_to]
@@ -135,7 +145,6 @@ post '/admin/app_release/android' do
     path = upload_file_to_s3(params[:archive], key: params[:archive][:filename], bucket: settings.s3[:storage_bucket])
     @app_release.download_url = settings.cdn[:storage_host] + path
   end
-
 
   @app_release.save
   json @app_release

@@ -30,6 +30,17 @@ img.avatar {
   border: 2px solid #FEB724;
 }
 
+.thumbnail.deleted {
+  border: 2px dashed #666666;
+  text-decoration: line-through;
+  color: #333333;
+}
+
+.thumbnail.deleted img {
+  filter: grayscale(1);
+  -webkit-filter: grayscale(1);
+}
+
 *[hidden] {
   display: none !important;
 }

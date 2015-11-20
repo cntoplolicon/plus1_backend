@@ -147,6 +147,26 @@ module.exports = React.createClass({
     })
   },
 
+  updatePostDeletedBy: function(deletedBy) {
+    var post = this.state.post
+    post.deleted_by = deletedBy
+    this.setState({post: post})
+    var data = {deleted_by: deletedBy}
+    var url = `/admin/posts/${this.props.params.postId}/deleted_by`
+    $.ajax({
+      url: url,
+      method: 'POST',
+      dataType: 'json',
+      data: data,
+      success: function(data) {
+        this.setState({post: data, comments: this.createCommentsTree(data)})
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(url, status, err.toString())
+      }.bind(this)
+    })
+  },
+
   render: function() {
     var post = this.state.post
     if (!post) {
@@ -157,6 +177,24 @@ module.exports = React.createClass({
     const colOffset = Math.floor((12 - colWidth) / 2)
     if (this.state.replyTo) {
       var cancelReplyButton = <Button className="cancel-reply-button" onClick={this.setReplyTo.bind(this, undefined)}>Cancel Reply</Button>
+    }
+    var deletePostPanel;
+    if (post.deleted_by === null) {
+      deletePostPanel = (
+        <Panel defaultExpanded header="Delete Post">
+          <form className="form-horizontal">
+              <Button bsStyle="primary" onClick={this.updatePostDeletedBy.bind(this, 2)}>Delete the Post</Button>
+          </form>
+        </Panel>
+      )
+    } else if (post.deleted_by === 2) {
+      deletePostPanel = (
+        <Panel defaultExpanded header="Restore Deleted Post">
+          <form className="form-horizontal">
+              <Button bsStyle="primary" onClick={this.updatePostDeletedBy.bind(this, null)}>Restore the Post</Button>
+          </form>
+        </Panel>
+      )
     }
     return (
       <Grid>
@@ -210,6 +248,7 @@ module.exports = React.createClass({
                 </div>
               </form>
             </Panel>
+            {deletePostPanel}
           </Col>
         </Row>
       </Grid>
