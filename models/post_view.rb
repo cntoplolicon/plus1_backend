@@ -6,4 +6,5 @@ class PostView < ActiveRecord::Base
   UNKOWN = 0
   SPREAD = 1
   SKIP = 2
+  POST_DELETED = 3
 end

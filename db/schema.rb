@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151119015252) do
+ActiveRecord::Schema.define(version: 20151120010855) do
 
   create_table "account_infos", force: :cascade do |t|
     t.integer  "user_id",            limit: 4,   null: false
@@ -112,6 +112,7 @@ ActiveRecord::Schema.define(version: 20151119015252) do
     t.integer  "views_count",    limit: 4, default: 0, null: false
     t.integer  "spreads_count",  limit: 4, default: 0, null: false
     t.integer  "recommendation", limit: 4
+    t.integer  "deleted_by",     limit: 4
   end
 
   add_index "posts", ["user_id"], name: "index_posts_on_user_id", using: :btree

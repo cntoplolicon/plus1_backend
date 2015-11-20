@@ -5,4 +5,8 @@ class Post < ActiveRecord::Base
   has_many :bookmarks
 
   attr_accessor :bookmarked
+
+  def deleted?
+    !deleted_by.nil?
+  end
 end

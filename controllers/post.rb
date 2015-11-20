@@ -35,7 +35,7 @@ end
 
 get '/users/:author_id/posts' do
   validate_access_token
-  @posts = Post.where(user_id: params[:author_id]).joins(:post_pages, :user)
+  @posts = Post.where(user_id: params[:author_id], deleted_by: nil).joins(:post_pages, :user)
     .includes(:post_pages, :user).order(created_at: :desc)
   set_bookmarked(@posts, @user)
   render :rabl, :posts
@@ -50,6 +50,9 @@ post '/users/:user_id/infections/:infection_id/post_view' do
 
     result = params[:result].to_i
     halt 400 unless [PostView::SPREAD, PostView::SKIP].include?(result)
+
+    post = Post.find(infection.post_id)
+    result = PostView::POST_DELETED if post.deleted?
 
     post_view = PostView.create(result: result, infection_id: infection.id)
     Post.where(id: infection.post_id).update_all('views_count = views_count + 1')
@@ -157,7 +160,7 @@ end
 get '/users/:user_id/bookmarks' do
   validate_access_token
   @posts = Post.joins(:bookmarks, :post_pages, :user).includes(:bookmarks, :post_pages, :user)
-    .where(bookmarks: {user_id: @user.id}).order('bookmarks.created_at desc')
+    .where(deleted_by: nil, bookmarks: {user_id: @user.id}).order('bookmarks.created_at desc')
   @posts.each do |post|
     post.bookmarked = true
   end
@@ -173,8 +176,8 @@ end
 
 get '/recommendations' do
   validate_access_token
-  @posts = Post.where.not(recommendation: nil).joins(:user, :post_pages).includes(:user, :post_pages)
-    .order(recommendation: :desc, created_at: :desc)
+  @posts = Post.where(deleted_by: nil).where.not(recommendation: nil)
+    .joins(:user, :post_pages).includes(:user, :post_pages).order(recommendation: :desc, created_at: :desc)
   set_bookmarked(@posts, @user)
   render :rabl, :posts
 end
