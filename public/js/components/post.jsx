@@ -13,7 +13,9 @@ module.exports = React.createClass({
       dataType: 'json',
       cache: false,
       success: function(data) {
-        this.setState({post: data, comments: this.createCommentsTree(data)})
+        if (this.isMounted()) {
+          this.setState({post: data, comments: this.createCommentsTree(data)})
+        }
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(url, status, err.toString())
@@ -106,8 +108,10 @@ module.exports = React.createClass({
       dataType: 'json',
       data: data,
       success: function(data) {
-        this.setState({post: data, comments: this.createCommentsTree(data), requesting: false, replyTo: undefined})
-        this.refs.form.reset()
+        if (this.isMounted()) {
+          this.setState({post: data, comments: this.createCommentsTree(data), requesting: false, replyTo: undefined})
+          this.refs.form.reset()
+        }
       }.bind(this),
       error: function(xhr, status, err) {
         if (xhr.status === 403) {
@@ -136,7 +140,9 @@ module.exports = React.createClass({
       dataType: 'json',
       data: data,
       success: function(data) {
-        this.setState({post: data, comments: this.createCommentsTree(data)})
+        if (this.isMounted()) {
+          this.setState({post: data, comments: this.createCommentsTree(data)})
+        }
       }.bind(this),
       error: function(xhr, status, err) {
         if (xhr.status === 403) {
@@ -159,7 +165,9 @@ module.exports = React.createClass({
       dataType: 'json',
       data: data,
       success: function(data) {
-        this.setState({post: data, comments: this.createCommentsTree(data)})
+        if (this.isMounted()) {
+          this.setState({post: data, comments: this.createCommentsTree(data)})
+        }
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(url, status, err.toString())

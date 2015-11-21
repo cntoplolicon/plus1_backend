@@ -13,7 +13,9 @@ module.exports = React.createClass({
       dataType: 'json',
       cache: false,
       success: function(data) {
-        this.setState({user: data})
+        if (this.isMounted()) {
+          this.setState({user: data})
+        }
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(url, status, err.toString())
@@ -67,8 +69,10 @@ module.exports = React.createClass({
       contentType: false,
       data: data,
       success: function(data) {
-        this.setState({user: data, requesting: false})
-        this.refs.form.reset()
+        if (this.isMounted()) {
+          this.setState({user: data, requesting: false})
+          this.refs.form.reset()
+        }
       }.bind(this),
       error: function(xhr, status, err) {
         if (xhr.status === 403) {
