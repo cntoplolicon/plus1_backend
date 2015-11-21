@@ -5,5 +5,6 @@ post '/feedbacks' do
   feedback_params[:user_id] = @user.id
   feedback = Feedback.new(feedback_params)
   halt 400, json(errors: feedback.errors) unless feedback.save
-  return 201, feedback.to_json
+  status 201
+  json(feedback)
 end

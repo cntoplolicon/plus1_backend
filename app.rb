@@ -37,6 +37,11 @@ def success
   json(status: 'success')
 end
 
+def rabl_json(template, options = {})
+  content_type :json
+  rabl(template, options)
+end
+
 get '/' do
   send_file File.join(settings.public_folder, 'index.html')
 end

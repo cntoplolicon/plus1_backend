@@ -22,12 +22,12 @@ get '/admin/users' do
   search = params[:search]
   @users = @users.where('username like ? or nickname like ?', "%#{search}%", "%#{search}%").limit(100) if search
 
-  render :rabl, :admin_users
+  rabl_json :admin_users
 end
 
 get '/admin/users/:user_id' do
   @user = User.where(id: params[:user_id]).includes(posts: :post_pages).take
-  render :rabl, :admin_user
+  rabl_json :admin_user
 end
 
 get '/admin/feedbacks' do
@@ -36,7 +36,7 @@ get '/admin/feedbacks' do
   @feedbacks = @feedbacks.where(users: {username: username}) if username
   @feedbacks = @feedbacks.limit(1000) unless username
 
-  render :rabl, :admin_feedbacks
+  rabl_json :admin_feedbacks
 end
 
 get '/admin/complains' do
@@ -45,12 +45,12 @@ get '/admin/complains' do
   @complains = @complains.where(users: {username: username}) if username
   @complains = @complains.limit(1000) unless username
 
-  render :rabl, :admin_complains
+  rabl_json :admin_complains
 end
 
 get '/admin/posts/:post_id' do
   @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
-  render :rabl, :post_with_comments
+  rabl_json :post_with_comments
 end
 
 post '/admin/posts/:post_id/deleted_by' do
@@ -60,7 +60,7 @@ post '/admin/posts/:post_id/deleted_by' do
     halt 400, json(@posts.errors)
   end
   @post.update(deleted_by: params[:deleted_by])
-  render :rabl, :post_with_comments
+  rabl_json :post_with_comments
 end
 
 post '/admin/posts/:post_id/comments' do
@@ -78,13 +78,13 @@ post '/admin/posts/:post_id/comments' do
   end
 
   @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
-  render :rabl, :post_with_comments
+  rabl_json :post_with_comments
 end
 
 put '/admin/posts/:post_id/recommendation' do
   @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
   @post.update(params.deep_symbolize_keys.slice(:recommendation))
-  render :rabl, :post_with_comments
+  rabl_json :post_with_comments
 end
 
 post '/admin/users/:user_id/posts' do
@@ -126,7 +126,7 @@ post '/admin/users/:user_id/posts' do
   end
 
   @user = User.where(id: params[:user_id]).includes(posts: :post_pages).take
-  render :rabl, :admin_user
+  rabl_json :admin_user
 end
 
 get '/admin/app_release/android' do

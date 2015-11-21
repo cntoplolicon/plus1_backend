@@ -30,7 +30,7 @@ post '/users/:user_id/posts' do
 
   status 201
   @post = post
-  rabl :post
+  rabl_json :post
 end
 
 delete '/users/:user_id/posts/:post_id' do
@@ -39,7 +39,7 @@ delete '/users/:user_id/posts/:post_id' do
   @post = @user.posts.find(params[:post_id])
   @post.update(deleted_by: Post::DELETED_BY_AUTHOR) if @post.deleted_by != Post::DELETED_BY_ADMIN
   @post.bookmarked = Bookmark.where(user_id: @user.id, post_id: @post.id).exists?
-  rabl :post
+  rabl_json :post
 end
 
 get '/users/:author_id/posts' do
@@ -47,7 +47,7 @@ get '/users/:author_id/posts' do
   @posts = Post.where(user_id: params[:author_id], deleted_by: nil).joins(:post_pages, :user)
     .includes(:post_pages, :user).order(created_at: :desc)
   set_bookmarked(@posts, @user)
-  render :rabl, :posts
+  rabl_json :posts
 end
 
 post '/users/:user_id/infections/:infection_id/post_view' do
@@ -83,7 +83,7 @@ post '/users/:user_id/infections/:infection_id/post_view' do
     @post_view = post_view
   end
 
-  render :rabl, :post_view
+  rabl_json :post_view
 end
 
 get '/users/:user_id/infections/active' do
@@ -97,7 +97,7 @@ get '/users/:user_id/infections/active' do
     infection.post.bookmarked = bookmarked_post_ids.include?(infection.post.id)
   end
 
-  render :rabl, :infections
+  rabl_json :infections
 end
 
 post '/posts/:post_id/comments' do
@@ -129,7 +129,7 @@ post '/posts/:post_id/comments' do
   end
 
   status 201
-  render :rabl, :comment_with_post
+  rabl_json :comment_with_post
 end
 
 delete '/posts/:post_id/comments/:comment_id' do
@@ -137,7 +137,7 @@ delete '/posts/:post_id/comments/:comment_id' do
   @comment = Comment.find(params[:comment_id])
   halt 400 unless @comment.post_id == params[:post_id].to_i
   @comment.update(deleted: true)
-  render :rabl, :comment
+  rabl_json :comment
 end
 
 post '/users/:user_id/bookmarks' do
@@ -153,7 +153,7 @@ post '/users/:user_id/bookmarks' do
   @post = bookmark.post
   @post.bookmarked = true
   status 201
-  render :rabl, :post
+  rabl_json :post
 end
 
 delete '/users/:user_id/bookmarks/:post_id' do
@@ -163,7 +163,7 @@ delete '/users/:user_id/bookmarks/:post_id' do
 
   @post = Post.find(post_id)
   @post.bookmarked = false
-  render :rabl, :post
+  rabl_json :post
 end
 
 get '/users/:user_id/bookmarks' do
@@ -173,14 +173,14 @@ get '/users/:user_id/bookmarks' do
   @posts.each do |post|
     post.bookmarked = true
   end
-  render :rabl, :posts
+  rabl_json :posts
 end
 
 get '/posts/:post_id' do
   validate_access_token
   @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
   @post.bookmarked = Bookmark.where(user_id: @user.id, post_id: @post.id).exists?
-  render :rabl, :post_with_comments
+  rabl_json :post_with_comments
 end
 
 get '/recommendations' do
@@ -188,7 +188,7 @@ get '/recommendations' do
   @posts = Post.where(deleted_by: nil).where.not(recommendation: nil)
     .joins(:user, :post_pages).includes(:user, :post_pages).order(recommendation: :desc, created_at: :desc)
   set_bookmarked(@posts, @user)
-  render :rabl, :posts
+  rabl_json :posts
 end
 
 post '/users/:user_id/complains' do
