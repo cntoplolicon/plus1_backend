@@ -8,6 +8,7 @@ const {Router, Route} = require('react-router')
 const AppNav = require('./components/appNav')
 const Users = require('./components/users')
 const User = require('./components/user')
+const Posts = require('./components/posts')
 const Post = require('./components/post')
 const Feedbacks = require('./components/feedbacks')
 const Complains = require('./components/complains.jsx')
@@ -20,6 +21,7 @@ var Routes = (
     <Route path="/" component={AppNav}>
       <Route path="/users" component={Users} />
       <Route path="/users/:userId" component={User} />
+      <Route path="/posts" component={Posts} />
       <Route path="/posts/:postId" component={Post} />
       <Route path="/feedbacks" component={Feedbacks} />
       <Route path="/complains" component={Complains} />

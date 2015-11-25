@@ -79,6 +79,12 @@ get '/admin/complains' do
   rabl_json :admin_complains
 end
 
+get '/admin/posts' do
+  @posts = Post.all.order(created_at: :desc)
+
+  rabl_json :posts;
+end
+
 get '/admin/posts/:post_id' do
   @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
   rabl_json :post_with_comments

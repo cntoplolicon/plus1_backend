@@ -12,6 +12,9 @@ module.exports = React.createClass({
             <LinkContainer to="/users">
               <NavItem>Users</NavItem>
             </LinkContainer>
+            <LinkContainer to="/posts">
+              <NavItem>Posts</NavItem>
+            </LinkContainer>
             <LinkContainer to="/feedbacks">
               <NavItem>Feedbacks</NavItem>
             </LinkContainer>
