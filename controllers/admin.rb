@@ -114,7 +114,14 @@ end
 
 put '/admin/posts/:post_id/recommendation' do
   @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
+  original_recommended = @post.recommended?
   @post.update(params.deep_symbolize_keys.slice(:recommendation))
+  if !original_recommended && @post.recommended?
+    user = @post.user
+    post_json = render :rabl, :post
+    notification_content = build_notification_content(user.id, 'recommend', post_json)
+    publish_notification(user.account_info.av_installation_id, notification_content)
+  end
   rabl_json :post_with_comments
 end
 

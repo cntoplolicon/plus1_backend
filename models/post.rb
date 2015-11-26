@@ -12,4 +12,8 @@ class Post < ActiveRecord::Base
   def deleted?
     !deleted_by.nil?
   end
+
+  def recommended?
+    !recommendation.nil?
+  end
 end
