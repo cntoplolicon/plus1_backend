@@ -31,12 +31,12 @@ const UsersTable = React.createClass({
             this.props.users.map(function(user) {
               return (
                 <tr key={user.id}>
-                  <td>{user.id}</td>
                   <td>
                     <Link to={`/users/${user.id}`}>
-                      {user.username}
+                      {user.id}
                     </Link>
                   </td>
+                  <td>{user.username}</td>
                   <td>{user.nickname}</td>
                   <td>{this.getGenderText(user.gender)}</td>
                 </tr>
