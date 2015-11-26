@@ -81,6 +81,8 @@ end
 
 get '/admin/posts' do
   @posts = Post.all.order(created_at: :desc)
+  recomended = params[:recomended]
+  @posts = @posts.where('recommendation is not null').limit(100) if recomended
 
   rabl_json :posts;
 end
