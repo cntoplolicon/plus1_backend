@@ -44,3 +44,15 @@ img.avatar {
 *[hidden] {
   display: none !important;
 }
+
+.new-link {
+  margin-bottom: 8px;
+}
+
+.event-thumbnail {
+}
+
+.thumbnail.event-thumbnail {
+  max-width: 200px;
+  display: inline-block;
+}

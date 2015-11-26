@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120023055) do
+ActiveRecord::Schema.define(version: 20151125073019) do
 
   create_table "account_infos", force: :cascade do |t|
     t.integer  "user_id",            limit: 4,   null: false
@@ -70,6 +70,22 @@ ActiveRecord::Schema.define(version: 20151120023055) do
 
   add_index "complains", ["post_id"], name: "index_complains_on_post_id", using: :btree
   add_index "complains", ["user_id"], name: "index_complains_on_user_id", using: :btree
+
+  create_table "event_pages", force: :cascade do |t|
+    t.integer  "event_id",   limit: 4,   null: false
+    t.integer  "order",      limit: 4,   null: false
+    t.string   "image",      limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "event_pages", ["event_id"], name: "index_event_pages_on_event_id", using: :btree
+
+  create_table "events", force: :cascade do |t|
+    t.string   "description", limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
 
   create_table "feedbacks", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -163,6 +179,7 @@ ActiveRecord::Schema.define(version: 20151120023055) do
   add_foreign_key "comments", "users"
   add_foreign_key "complains", "posts"
   add_foreign_key "complains", "users"
+  add_foreign_key "event_pages", "events"
   add_foreign_key "infections", "post_views"
   add_foreign_key "infections", "posts"
   add_foreign_key "infections", "users"

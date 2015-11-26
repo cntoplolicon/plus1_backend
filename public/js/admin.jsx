@@ -10,8 +10,10 @@ const Users = require('./components/users')
 const User = require('./components/user')
 const Post = require('./components/post')
 const Feedbacks = require('./components/feedbacks')
-const AndroidRelease = require('./components/androidRelease.jsx')
 const Complains = require('./components/complains.jsx')
+const Events = require('./components/events.jsx')
+const EventEditor = require('./components/eventEditor.jsx')
+const AndroidRelease = require('./components/androidRelease.jsx')
 
 var Routes = (
   <Router>
@@ -20,8 +22,11 @@ var Routes = (
       <Route path="/users/:userId" component={User} />
       <Route path="/posts/:postId" component={Post} />
       <Route path="/feedbacks" component={Feedbacks} />
-      <Route path="/android_release" component={AndroidRelease} />
       <Route path="/complains" component={Complains} />
+      <Route path="/events" component={Events} />
+      <Route path="/events/new" component={EventEditor} />
+      <Route path="/events/:eventId/edit" component={EventEditor} />
+      <Route path="/android_release" component={AndroidRelease} />
     </Route>
   </Router>
 )

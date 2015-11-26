@@ -7,6 +7,37 @@ def validate_admin_account
   halt 403 unless @user && @user.admin? && @user.authenticate(params[:password])
 end
 
+def update_event_attributes
+  Event.transaction do
+    event_params = params.deep_symbolize_keys.slice(:description)
+    @event.attributes = event_params
+    if params[:image_files]
+      @event.event_pages.destroy_all
+      params[:image_files].each_with_index do |image_file, i|
+        image_path = compress_and_upload_image(image_file[:tempfile])
+        @event.event_pages.build(image: image_path, order: i)
+      end
+    end
+    halt 400, json(@event.errors) unless @event.save
+  end
+end
+
+def compress_and_upload_image(temp_file)
+  image = Magick::Image.read(temp_file.path).first
+  image = image.resize_to_fit(960, 960)
+  tempfile = Tempfile.new('image')
+  begin
+    image.write(tempfile.path) do
+      self.format = 'JPEG'
+      self.quality = 75
+    end
+    return upload_file_to_s3(filename: 'image.jpg', type: 'image/jpeg', tempfile: tempfile)
+  ensure
+    tempfile.close
+    tempfile.unlink
+  end
+end
+
 before '/admin/*' do
   return unless Sinatra::Base.production?
   @auth ||= Rack::Auth::Basic::Request.new(request.env)
@@ -96,20 +127,8 @@ post '/admin/users/:user_id/posts' do
     halt 400 if !post_page[:text] && !post_page[:image]
     page_params = post_page.slice(:text).merge(order: i)
     if post_page[:image]
-      image = Magick::Image.read(post_page[:image][:tempfile].path).first
-      image = image.resize_to_fit(960, 960)
-      tempfile = Tempfile.new('image')
-      begin
-        image.write(tempfile.path) do
-          self.format = 'JPEG'
-          self.quality = 75
-        end
-        image_path = upload_file_to_s3(filename: 'image.jpg', type: 'image/jpeg', tempfile: tempfile)
-        page_params = page_params.merge(image_width: image.columns, image_height: image.rows, image: image_path)
-      ensure
-        tempfile.close
-        tempfile.unlink
-      end
+      image_path = compress_and_upload_image(post_page[:image][:tempfile])
+      page_params = page_params.merge(image_width: image.columns, image_height: image.rows, image: image_path)
     end
     post.post_pages.build(page_params)
   end
@@ -157,4 +176,26 @@ post '/admin/app_release/android' do
 
   @app_release.save
   json @app_release
+end
+
+post '/admin/events' do
+  @event = Event.new
+  update_event_attributes
+  rabl_json :event
+end
+
+put '/admin/events/:event_id' do
+  @event = Event.find(params[:event_id])
+  update_event_attributes
+  rabl_json :event
+end
+
+get '/admin/events' do
+  @events = Event.all
+  rabl_json :events
+end
+
+get '/admin/events/:event_id' do
+  @event = Event.find(params[:event_id])
+  rabl_json :event
 end
