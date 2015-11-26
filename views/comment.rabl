@@ -6,7 +6,3 @@ attribute :content, if: ->(comment) { !comment.deleted }
 child :user do
   extends 'user'
 end
-
-child :post do
-  extends 'post'
-end
