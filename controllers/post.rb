@@ -90,7 +90,7 @@ get '/users/:user_id/infections/active' do
   validate_access_token
 
   @infections = Infection.where(user_id: @user.id, active: true)
-    .joins(post: :user).includes(post: [:user, :post_pages]).order(:id).limit(1000)
+    .joins(post: :user).includes(post: [:user, :post_pages]).order('posts.created_at desc').limit(100)
   bookmarked_post_ids = Set.new(Bookmark.where(user_id: @user.id).pluck(:post_id))
 
   @infections.each do |infection|
