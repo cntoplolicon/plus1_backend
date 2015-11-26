@@ -10,7 +10,7 @@ const PostsTable = React.createClass({
   render: function() {
     var posts = this.props.posts
     if (!posts) {
-      var progress = this.state == null? 0 : this.state.progress
+      var progress = this.state == null ? 0 : this.state.progress
       return <ProgressBar striped bsStyle="info" now={progress * 100} />
     }
     const POSTS_PER_ROW = 4
@@ -45,7 +45,7 @@ const PostsTable = React.createClass({
 
 module.exports = React.createClass({
   loadPostsFromServer: function() {
-    var url = `/admin/posts`
+    var url = '/admin/posts'
     var data = {
       recommended: this.state.recommended || undefined,
       date: this.state.startDate.format()
@@ -89,7 +89,7 @@ module.exports = React.createClass({
     this.loadPostsFromServer()
   },
 
-  handleChange: function(date) {
+  handleDateChanged: function(date) {
     this.state.startDate = date
     this.loadPostsFromServer()
   },
@@ -97,7 +97,7 @@ module.exports = React.createClass({
   render: function() {
     return (
       <div>
-        <DatePicker selected={this.state.startDate} onChange={this.handleChange} />
+        <DatePicker selected={this.state.startDate} onChange={this.handleDateChanged} />
         <Input onChange={this.handleCheckBoxChange} type="checkbox" label="Show recommended posts only" ref="checkbox" />
         <PostsTable posts={this.state.posts} />
       </div>

@@ -80,11 +80,10 @@ get '/admin/complains' do
 end
 
 get '/admin/posts' do
-  @posts = Post.all.order(created_at: :desc)
+  date = DateTime.iso8601(params[:date]).beginning_of_day
+  @posts = Post.where('created_at >= ? and created_at < ?', date, date + 1.days).order(created_at: :desc)
   recommended = params[:recommended]
-  @posts = @posts.where('recommendation is not null') if recommended
-  date = DateTime.iso8601(params[:date])
-  @posts = @posts.where('created_at Between ? and ?', date.beginning_of_day, date.end_of_day)
+  @posts = @posts.where.not(recommendation: nil) if recommended
 
   rabl_json :posts;
 end
