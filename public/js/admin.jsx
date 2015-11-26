@@ -1,4 +1,5 @@
 require('../css/admin.css')
+require('react-datepicker/dist/react-datepicker.css');
 require('bootstrap/less/bootstrap.less')
 
 const React = require('react')

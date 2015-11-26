@@ -1,8 +1,10 @@
 const React = require('react')
 const $ = require('jquery')
 const {ProgressBar, Grid, Row, Col, Button, Input, Panel} = require('react-bootstrap')
-const {Link} =  require('react-router')
+const {Link} = require('react-router')
 const PostThumbnail = require('./postThumbnail')
+const DatePicker = require('react-datepicker')
+const moment = require('moment')
 
 const PostsTable = React.createClass({
   render: function() {
@@ -44,11 +46,9 @@ const PostsTable = React.createClass({
 module.exports = React.createClass({
   loadPostsFromServer: function() {
     var url = `/admin/posts`
-
-    var recomendedOnly = this.state.recomended
-    var data;
-    if (recomendedOnly) {
-      data = {recomended: recomendedOnly}
+    var data = {
+      recommended: this.state.recommended || undefined,
+      date: this.state.startDate.format()
     }
 
     $.ajax({
@@ -77,7 +77,7 @@ module.exports = React.createClass({
   },
 
   getInitialState: function() {
-    return {progress: 0, requesting: false}
+    return {progress: 0, requesting: false, startDate: moment(), recommended: false}
   },
 
   componentDidMount: function() {
@@ -85,15 +85,20 @@ module.exports = React.createClass({
   },
 
   handleCheckBoxChange: function() {
-    this.state.recomended = !this.state.recomended
+    this.state.recommended = !this.state.recommended
+    this.loadPostsFromServer()
+  },
+
+  handleChange: function(date) {
+    this.state.startDate = date
     this.loadPostsFromServer()
   },
 
   render: function() {
     return (
       <div>
-        <Input onChange={this.handleCheckBoxChange} type="checkbox" label="Show recommendations only" ref="checkbox" />
-        <div className="users-table-hint">Show the lastest 100 complains when no searching</div>
+        <DatePicker selected={this.state.startDate} onChange={this.handleChange} />
+        <Input onChange={this.handleCheckBoxChange} type="checkbox" label="Show recommended posts only" ref="checkbox" />
         <PostsTable posts={this.state.posts} />
       </div>
     )

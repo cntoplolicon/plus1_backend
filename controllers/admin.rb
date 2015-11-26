@@ -81,8 +81,10 @@ end
 
 get '/admin/posts' do
   @posts = Post.all.order(created_at: :desc)
-  recomended = params[:recomended]
-  @posts = @posts.where('recommendation is not null').limit(100) if recomended
+  recommended = params[:recommended]
+  @posts = @posts.where('recommendation is not null') if recommended
+  date = DateTime.iso8601(params[:date])
+  @posts = @posts.where('created_at Between ? and ?', date.beginning_of_day, date.end_of_day)
 
   rabl_json :posts;
 end
