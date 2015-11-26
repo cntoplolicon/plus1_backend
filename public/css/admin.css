@@ -56,3 +56,7 @@ img.avatar {
   max-width: 200px;
   display: inline-block;
 }
+
+.nickname {
+  color: blue;
+}

@@ -79,6 +79,15 @@ get '/admin/complains' do
   rabl_json :admin_complains
 end
 
+get '/admin/posts' do
+  date = DateTime.iso8601(params[:date]).beginning_of_day
+  @posts = Post.where('created_at >= ? and created_at < ?', date, date + 1.days).order(created_at: :desc)
+  recommended = params[:recommended]
+  @posts = @posts.where.not(recommendation: nil) if recommended
+
+  rabl_json :posts;
+end
+
 get '/admin/posts/:post_id' do
   @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
   rabl_json :post_with_comments

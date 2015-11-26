@@ -37,6 +37,7 @@
     "qrcode-npm": "0.0.3",
     "react": "^0.14.0",
     "react-bootstrap": "^0.27.2",
+    "react-datepicker": "^0.15.2",
     "react-dom": "^0.14.0",
     "react-router": "^1.0.0-rc3",
     "react-router-bootstrap": "^0.19.2"
