@@ -50,7 +50,6 @@ img {
 
 .qrcode {
   position: absolute;
-  ;
   top: 284px;
   left: 608px;
 }
@@ -109,3 +108,13 @@ a {
     font-size: 37.5px;
   }
 }
+
+.wechat-background {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
