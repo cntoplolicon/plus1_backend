@@ -2,16 +2,16 @@ const React = require('react')
 
 const WeChatBackground = React.createClass({
   render: function() {
-    if (this.state.isShowing) {
-      return(
-        <div className="wechat-background">
-          <img className="wechat-prompt" src="../images/wechat_prompt.png" />
-        </div>
-      )
-    };
+    if (!this.props.isShowing) {
+      return null
+    }
+    return (
+      <div className="wechat-background">
+        <img className="wechat-prompt" src="../images/wechat_prompt.png" />
+      </div>
+    )
   }
 })
-
 
 module.exports = React.createClass({
   isWechat: function() {
@@ -19,17 +19,21 @@ module.exports = React.createClass({
     return /micromessenger/i.test(ua)
   },
 
+  getInitialState: function() {
+    return {isWechatPromptShowing: false}
+  },
+
   handleDownload: function(e) {
     if (this.isWechat()) {
       e.preventDefault()
-      this.state.isShowing = true
+      this.setState({isWechatPromptShowing: true})
     }
   },
 
   render: function() {
     return (
       <div>
-        <WeChatBackground />
+        <WeChatBackground isShowing={this.state.isWechatPromptShowing} />
         <div className="page">
           <img className="block" width="100%" src="../images/mobile_background.png" />
           <a onClick={this.handleDownload} href="http://download.oneplusapp.com/plus-one.apk">
