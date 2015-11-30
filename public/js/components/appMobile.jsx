@@ -11,8 +11,6 @@ module.exports = React.createClass({
     if(this.isWechat()) {
       e.preventDefault()
       $('.wechat-background').show()
-    } else {
-      $('.wechat-background').hide()
     }
   },
 
