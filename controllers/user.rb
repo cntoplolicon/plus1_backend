@@ -66,7 +66,8 @@ def update_user_attributes(user)
 end
 
 def populate_new_user_with_recommendations
-  posts_for_new_user_id = Post.where.not(recommendation: nil).order(recommendation: :desc).limit(10).pluck(:id)
+  posts_for_new_user_id = Post.where(deleted_by: nil).where.not(recommendation: nil)
+    .order(recommendation: :desc).limit(10).pluck(:id)
   new_user_infection_params = posts_for_new_user_id.map do |post_id|
     {user_id: @user.id, post_id: post_id, active: true}
   end
