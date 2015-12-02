@@ -3,3 +3,8 @@ get '/events/latest' do
   halt json({}) unless @event
   rabl_json :event
 end
+
+get '/events' do
+  @events = Event.all.order(created_at: :desc)
+  rabl_json :events
+end
