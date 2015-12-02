@@ -14,7 +14,7 @@ def update_event_attributes
     if params[:image_files]
       @event.event_pages.destroy_all
       params[:image_files].each_with_index do |image_file, i|
-        image_path = compress_and_upload_image(image_file[:tempfile])
+        image_path, = compress_and_upload_image(image_file[:tempfile])
         @event.event_pages.build(image: image_path, order: i)
       end
     end
