@@ -31,7 +31,7 @@ def compress_and_upload_image(temp_file)
       self.format = 'JPEG'
       self.quality = 75
     end
-    return upload_file_to_s3(filename: 'image.jpg', type: 'image/jpeg', tempfile: tempfile)
+    return upload_file_to_s3(filename: 'image.jpg', type: 'image/jpeg', tempfile: tempfile), image
   ensure
     tempfile.close
     tempfile.unlink
@@ -85,7 +85,7 @@ get '/admin/posts' do
   recommended = params[:recommended]
   @posts = @posts.where.not(recommendation: nil) if recommended
 
-  rabl_json :posts;
+  rabl_json :posts
 end
 
 get '/admin/posts/:post_id' do
@@ -143,7 +143,7 @@ post '/admin/users/:user_id/posts' do
     halt 400 if !post_page[:text] && !post_page[:image]
     page_params = post_page.slice(:text).merge(order: i)
     if post_page[:image]
-      image_path = compress_and_upload_image(post_page[:image][:tempfile])
+      image_path, image = compress_and_upload_image(post_page[:image][:tempfile])
       page_params = page_params.merge(image_width: image.columns, image_height: image.rows, image: image_path)
     end
     post.post_pages.build(page_params)
