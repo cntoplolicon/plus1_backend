@@ -12,6 +12,7 @@
       border-radius: 50px;
       margin-right: 10px;
       margin-top: 10px;
+      border: 1px solid #fed724;
     }
 
     .user-detail {
@@ -61,7 +62,11 @@
 </head>
 <body>
   <div>
+    <% if (@post.user.avatar) %>
       <img class="image-avatar" src="<%= image_url(@post.user.avatar) =%>" >
+    <% else %>
+      <img class="image-avatar" src="../images/default_user_avatar.png">
+    <% end %>
     <div class="user-detail">
       <span><%= @post.user.nickname =%></span>
       <span><%= @post.user.gender =%></span>
@@ -74,7 +79,7 @@
     <div class="post-no-image"><%= @post.post_pages[0].text =%></div>
     <% end %>
   <div class="post-detail">
-    <span><%= @post.post_pages[0].created_at =%></span>
+    <span><%= @post.post_pages[0].created_at.to_date =%></span>
     <span><%= @post.spreads_count =%></span>
     <span><%= @post.comments.length=%></span>
   </div>
@@ -82,7 +87,11 @@
   <div class="commnet-container">
     <% @post.comments.each do |comment| %>
     <div>
-    <img class="image-avatar" src="<%= image_url(comment.user.avatar) =%>">
+      <% if (comment.user.avatar) %>
+      <img class="image-avatar" src="<%= image_url(comment.user.avatar) =%>" >
+      <% else %>
+      <img class="image-avatar" src="../images/default_user_avatar.png">
+      <% end %>
     <div class="comment-detail">
       <span><%= @post.user.nickname =%></span>
       <p class="comment-content"><%= comment.content =%></p>
