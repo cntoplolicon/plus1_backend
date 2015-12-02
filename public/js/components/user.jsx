@@ -4,6 +4,7 @@ const {ProgressBar, Grid, Row, Col, Button, Input, Panel} = require('react-boots
 const {Link} =  require('react-router')
 const Avatar = require('./avatar')
 const PostThumbnail = require('./postThumbnail')
+const EventSelection = require('./eventSelection')
 
 module.exports = React.createClass({
   loadUserFromServer: function() {
@@ -57,6 +58,11 @@ module.exports = React.createClass({
     }
     if (image) {
       data.append('post_pages[][image]', image)
+    }
+
+    var eventId = this.refs.event.getValue()
+    if (eventId) {
+      data.append('event_id', eventId)
     }
 
     this.setState({requesting: true})
@@ -124,6 +130,7 @@ module.exports = React.createClass({
         <Panel defaultExpanded header="New Post">
           <form className="form-horizontal" ref="form">
             <Input type="password" label="Password" placeholder="Admin account password" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="password" />
+            <EventSelection label="Event" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="event" />
             <Input type="file" label="Upload an image" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="image" />
             <Input type="textarea" label="Say somehting" labelClassName="col-xs-2" wrapperClassName="col-xs-10" ref="text" />
             <div className="form-group">

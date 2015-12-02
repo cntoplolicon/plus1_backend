@@ -1,6 +1,7 @@
 const React = require('react')
-const PostThumbnail = require('./postThumbnail')
 const {Row, Col, Grid, ProgressBar, ListGroup, ListGroupItem, Input, Button, Panel} = require('react-bootstrap')
+const PostThumbnail = require('./postThumbnail')
+const EventSelection = require('./eventSelection')
 const {Link} =  require('react-router')
 const $ = require('jquery')
 const moment = require('moment')
@@ -145,9 +146,29 @@ module.exports = React.createClass({
         }
       }.bind(this),
       error: function(xhr, status, err) {
-        if (xhr.status === 403) {
-          alert("Username or password incorrect, or it's not an admin account")
+        console.error(url, status, err.toString())
+      }.bind(this)
+    })
+  },
+
+  submitEventId: function() {
+    var eventId = this.refs.event.getValue() || null
+    var post = this.state.post
+    post.event_id = eventId
+    this.setState({post: post})
+    var data = {event_id: eventId}
+    var url = `/admin/posts/${this.props.params.postId}/event_id`
+    $.ajax({
+      url: url,
+      method: 'PUT',
+      dataType: 'json',
+      data: data,
+      success: function(data) {
+        if (this.isMounted()) {
+          this.setState({post: data, comments: this.createCommentsTree(data)})
         }
+      }.bind(this),
+      error: function(xhr, status, err) {
         console.error(url, status, err.toString())
       }.bind(this)
     })
@@ -238,6 +259,12 @@ module.exports = React.createClass({
               <form className="form-horizontal">
                 <Input type="number" label="Recommendation" labelClassName="col-xs-3" wrapperClassName="col-xs-9"
                   ref="recommendation" onChange={this.submitRecommendation} value={this.state.post.recommendation} />
+              </form>
+            </Panel>
+            <Panel defaultExpanded header="Event">
+              <form className="form-horizontal">
+                <EventSelection label="Event" labelClassName="col-xs-3" wrapperClassName="col-xs-9"
+                  ref="event" onChange={this.submitEventId} value={this.state.post.event_id} />
               </form>
             </Panel>
             <Panel defaultExpanded header="New Comment">

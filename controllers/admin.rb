@@ -134,10 +134,17 @@ put '/admin/posts/:post_id/recommendation' do
   rabl_json :post_with_comments
 end
 
+put '/admin/posts/:post_id/event_id' do
+  @post = Post.find(params[:post_id])
+  @post.update(event_id: params[:event_id])
+  rabl_json :post_with_comments
+end
+
 post '/admin/users/:user_id/posts' do
   validate_admin_account
 
   post = @user.posts.build
+  post.event_id = params[:event_id]
   params[:post_pages].each_with_index do |post_page, i|
     post_page = post_page.deep_symbolize_keys
     halt 400 if !post_page[:text] && !post_page[:image]
@@ -207,7 +214,7 @@ put '/admin/events/:event_id' do
 end
 
 get '/admin/events' do
-  @events = Event.all
+  @events = Event.all.order(created_at: :desc)
   rabl_json :events
 end
 

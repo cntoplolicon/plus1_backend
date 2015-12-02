@@ -3,6 +3,7 @@ class Post < ActiveRecord::Base
   DELETED_BY_ADMIN = 2
 
   belongs_to :user
+  belongs_to :event
   has_many :post_pages, -> { order :order }
   has_many :comments, -> { order :created_at }
   has_many :bookmarks

@@ -191,6 +191,14 @@ get '/recommendations' do
   rabl_json :posts
 end
 
+get '/events/:event_id/recommendations' do
+  validate_access_token
+  @posts = Post.where(deleted_by: nil, event_id: params[:event_id]).where.not(recommendation: nil)
+    .joins(:user, :post_pages).includes(:user, :post_pages).order(recommendation: :desc, created_at: :desc)
+  set_bookmarked(@posts, @user)
+  rabl_json :posts
+end
+
 post '/users/:user_id/complains' do
   validate_access_token
 
