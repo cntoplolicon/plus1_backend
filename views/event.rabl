@@ -8,3 +8,7 @@ child :event_pages do
     image_url(page.image)
   end
 end
+
+node :logo do |event|
+  image_url(event.logo)
+end

@@ -14,7 +14,6 @@ module.exports = React.createClass({
     this.loadEventFromServer()
   },
 
-
   loadEventFromServer: function() {
     var url = `/admin/events/${this.props.params.eventId}`
     $.ajax({
@@ -36,6 +35,7 @@ module.exports = React.createClass({
     var data = new FormData()
     var description = this.state.description
     var imageFiles = this.refs.images.getInputDOMNode().files
+    var logoFile = this.refs.logo.getInputDOMNode().files[0]
 
     if (!description) {
       alert('description cannot be blank')
@@ -46,9 +46,12 @@ module.exports = React.createClass({
     for (var i = 0; i < imageFiles.length; i++) {
       data.append('image_files[]', imageFiles[i])
     }
+    if (logoFile) {
+      data.append('logo', logoFile)
+    }
 
     var eventId = this.props.params.eventId
-    var url = eventId ?  `/admin/events/${eventId}` : `/admin/events`
+    var url = eventId ? `/admin/events/${eventId}` : `/admin/events`
     var method = eventId ? 'put' : 'post'
 
     $.ajax({
@@ -80,6 +83,7 @@ module.exports = React.createClass({
         <Input type="text" ref="description" label="Description" labelClassName="col-xs-2" wrapperClassName="col-xs-10"
           onChange={this.setDescription} value={this.state.description} />
         <Input type="file" ref="images" multiple label="Images" labelClassName="col-xs-2" wrapperClassName="col-xs-10" />
+        <Input type="file" ref="logo" label="Logo" labelClassName="col-xs-2" wrapperClassName="col-xs-10" />
         <div className="form-group">
           <Col xs={10} xsOffset={2}>
             <Button bsStyle="primary" onClick={this.saveEvent} disabled={this.state.requesting} >Save</Button>
