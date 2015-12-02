@@ -17,6 +17,7 @@ const EventsTable = React.createClass({
             <th>id</th>
             <th>Description</th>
             <th>Created at</th>
+            <th>Logo</th>
             <th>Pages</th>
           </tr>
         </thead>
@@ -32,6 +33,9 @@ const EventsTable = React.createClass({
                   </td>
                   <td>{event.description}</td>
                   <td>{this.formatDate(event.created_at)}</td>
+                  <td>
+                    <img src={event.logo} className="event-logo-image" />
+                  </td>
                   <td>
                     {event.event_pages.map(function(page) {
                       return (

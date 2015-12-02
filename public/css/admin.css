@@ -60,3 +60,8 @@ img.avatar {
 .nickname {
   color: blue;
 }
+
+.event-logo-image {
+  width: 150px;
+  display: block;
+}

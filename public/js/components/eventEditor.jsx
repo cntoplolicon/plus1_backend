@@ -81,12 +81,12 @@ module.exports = React.createClass({
     return (
       <form className="form-horizontal" encType="multipart/form-data">
         <Input type="text" ref="description" label="Description" labelClassName="col-xs-2" wrapperClassName="col-xs-10"
-          onChange={this.setDescription} value={this.state.description}/>
-        <Input type="file" ref="images" multiple label="Images" labelClassName="col-xs-2" wrapperClassName="col-xs-10"/>
-        <Input type="file" ref="logo" label="Logo" labelClassName="col-xs-2" wrapperClassName="col-xs-10"/>
+          onChange={this.setDescription} value={this.state.description} />
+        <Input type="file" ref="images" multiple label="Images" labelClassName="col-xs-2" wrapperClassName="col-xs-10" />
+        <Input type="file" ref="logo" label="Logo" labelClassName="col-xs-2" wrapperClassName="col-xs-10" />
         <div className="form-group">
           <Col xs={10} xsOffset={2}>
-            <Button bsStyle="primary" onClick={this.saveEvent} disabled={this.state.requesting}>Save</Button>
+            <Button bsStyle="primary" onClick={this.saveEvent} disabled={this.state.requesting} >Save</Button>
           </Col>
         </div>
       </form>
