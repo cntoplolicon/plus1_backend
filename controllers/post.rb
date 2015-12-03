@@ -176,9 +176,10 @@ get '/users/:user_id/bookmarks' do
   rabl_json :posts
 end
 
-get '/posts/:post_id' do
-  validate_access_token
+get '/posts/:post_id.?:format?' do
   @post = Post.where(id: params[:post_id]).joins(:post_pages).includes({comments: :user}, :post_pages).take
+  return erb :share_post if params[:format] == 'html'
+  validate_access_token
   @post.bookmarked = Bookmark.where(user_id: @user.id, post_id: @post.id).exists?
   rabl_json :post_with_comments
 end
