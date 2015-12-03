@@ -18,7 +18,9 @@ def update_event_attributes
         @event.event_pages.build(image: image_path, order: i)
       end
     end
-    @event.logo, = compress_and_upload_image(params[:logo][:tempfile]) if params[:logo]
+    @event.logo, image = compress_and_upload_image(params[:logo][:tempfile]) if params[:logo]
+    @event.logo_width = image.columns
+    @event.logo_height = image.rows
     halt 400, json(@event.errors) unless @event.save
   end
 end

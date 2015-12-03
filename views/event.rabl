@@ -1,6 +1,6 @@
 object @event
 
-attributes :id, :description, :created_at
+attributes :id, :description, :created_at, :logo_width, :logo_height
 
 child :event_pages do
   attributes :id
