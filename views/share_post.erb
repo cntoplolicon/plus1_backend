@@ -15,8 +15,14 @@
       border: 1px solid #fed724;
     }
 
+    .commnet-container .image-avatar {
+      width: 40px;
+      height: 40px;
+    }
+
     .user-detail {
       padding-top: 26px;
+      font-size: 18px;
     }
 
     .post-image {
@@ -25,12 +31,17 @@
     }
 
     .post-text {
-      margin: 10px 0;
+      margin: 20px 0;
       text-align: center;
+      font-size: 16px;
+      color: #666666;
     }
 
     .post-detail {
       margin: 10px 0;
+      height: 20px;
+      font-size: 14px;
+      color: #999999;
     }
 
     .divding-line {
@@ -43,7 +54,9 @@
     }
 
     .comment-content {
-      margin: 10px;
+      overflow: hidden;
+      margin-right: 10px;
+      word-wrap: break-word;
     }
 
     .post-no-image {
@@ -51,25 +64,41 @@
       text-align: center;
       padding-top: 80px;
       height: 80px;
+      color: #666666;
     }
+
+    .post-info-img {
+      width: 18px;
+      margin-left: 20px;
+    }
+
+    .user_icon {
+      width: 18px;
+      margin-left: 6px;
+      margin-bottom: -4px;
+    }
+
+    img[src=""] {
+      display: none;
+    }
+
+    .reply-comment {
+      padding-left: 30px;
+    }
+
+    .comment-detail{
+      color: #999999;
+      font-size: 12px;
+    }
+
   </style>
-
-  <script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-
-  });
-  </script>
 </head>
 <body>
-  <div>
-    <% if (@post.user.avatar) %>
-      <img class="image-avatar" src="<%= image_url(@post.user.avatar) %>" >
-    <% else %>
-      <img class="image-avatar" src="../images/default_user_avatar.png">
-    <% end %>
+  <div class="header">
+    <%= user_avatar(@post.user)%>
     <div class="user-detail">
-      <span><%= @post.user.nickname %></span>
-      <span><%= @post.user.gender %></span>
+      <%= name_span(@post.user)%>
+      <%= gender_icon(@post.user.gender) %>
     </div>
   </div>
     <% if(@post.post_pages[0].image)%>
@@ -79,25 +108,17 @@
     <div class="post-no-image"><%= @post.post_pages[0].text %></div>
     <% end %>
   <div class="post-detail">
-    <span><%= @post.post_pages[0].created_at.to_date %></span>
-    <span><%= @post.spreads_count %></span>
-    <span><%= @post.comments.length %></span>
+    <div style="float: left;">
+      <span id="time-ago"><%= time_ago(@post.post_pages[0].created_at)%></span>
+    </div>
+    <div style="float: right; margin-right: 20px">
+      <img class="post-info-img" src="../images/icon_views.png">
+      <span><%= @post.spreads_count %></span>
+      <img class="post-info-img" style="margin-bottom: -2px" src="../images/icon_comment.png">
+      <span><%= @post.comments.length %></span>
+    </div>
   </div>
   <div class="divding-line"></div>
-  <div class="commnet-container">
-    <% @post.comments.each do |comment| %>
-    <div>
-      <% if (comment.user.avatar) %>
-      <img class="image-avatar" src="<%= image_url(comment.user.avatar) %>" >
-      <% else %>
-      <img class="image-avatar" src="../images/default_user_avatar.png">
-      <% end %>
-    <div class="comment-detail">
-      <span><%= @post.user.nickname %></span>
-      <p class="comment-content"><%= comment.content %></p>
-    </div>
-    </div>
-    <% end %>
-  </div>
+  <%= comments_list(@post.comments) %>
 </body>
 </html>

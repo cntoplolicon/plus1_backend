@@ -5,6 +5,7 @@ require 'sinatra/config_file'
 require 'net/http'
 require 'rabl'
 require 'byebug' if Sinatra::Base.development?
+require './helpers'
 
 set :environments, %w(development test production staging)
 
@@ -23,14 +24,6 @@ set :rabl, format: :json
 Rabl.configure do |config|
   config.include_json_root = false
   config.include_child_root = false
-end
-
-helpers do
-  def image_url(path)
-    return nil unless path
-    return path if path.start_with?('http')
-    settings.cdn[:hosts].sample + path
-  end
 end
 
 def success
