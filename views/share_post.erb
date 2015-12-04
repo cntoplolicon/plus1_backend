@@ -95,14 +95,10 @@
 </head>
 <body>
   <div class="header">
-    <% if (@post.user.avatar) %>
-      <img class="image-avatar" src="<%= image_url(@post.user.avatar) %>" >
-    <% else %>
-      <img class="image-avatar" src="../images/default_user_avatar.png">
-    <% end %>
+    <%= user_avatar(@post.user)%>
     <div class="user-detail">
-      <span style="color: <%= name_color(@post.user.gender) %>"><%= @post.user.nickname %></span>
-      <img class="user_icon" src="<%= name_icon(@post.user.gender) %>">
+      <%= name_span(@post.user)%>
+      <%= gender_icon(@post.user.gender) %>
     </div>
   </div>
     <% if(@post.post_pages[0].image)%>
@@ -128,27 +124,19 @@
     <% sort_comment(@post.comments).each do |comment| %>
       <% if(!comment.reply_to_id)%>
         <div>
-          <% if (comment.user.avatar) %>
-          <img class="image-avatar" src="<%= image_url(comment.user.avatar) %>" >
-          <% else %>
-          <img class="image-avatar" src="../images/default_user_avatar.png">
-          <% end %>
+          <%= user_avatar(comment.user)%>
           <div class="comment-detail">
-            <span style="color: <%= name_color(comment.user.gender) %>"><%= comment.user.nickname %></span>
+            <%= name_span(comment.user)%>
             <p class="comment-content"><%= comment.content %></p>
           </div>
         </div>
       <% else %>
         <div class="reply-comment">
-          <% if (comment.user.avatar) %>
-          <img class="image-avatar" src="<%= image_url(comment.user.avatar) %>" >
-          <% else %>
-          <img class="image-avatar" src="../images/default_user_avatar.png">
-          <% end %>
+          <%= user_avatar(comment.user)%>
           <div class="comment-detail">
-            <span style="color: <%= name_color(comment.user.gender) %>"><%= comment.user.nickname %></span>
+            <%= name_span(comment.user)%>
             <span>回复</span>
-            <span style="color: <%= name_color(get_reply_comment(comment.reply_to_id).user.gender) %>"><%= get_reply_comment(comment.reply_to_id).user.nickname %></span>
+            <%= name_span(get_reply_comment(comment.reply_to_id).user)%>
             <p class="comment-content"><%= comment.content %></p>
           </div>
         </div>

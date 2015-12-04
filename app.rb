@@ -47,6 +47,17 @@ get '/app_release/android' do
   end
 end
 
+def dfs(map, comment)
+  @comments_sorted.push(comment)
+  map[comment.id].each do |reply_comment|
+    dfs(map, reply_comment)
+  end
+end
+
+def get_reply_comment(comment_id)
+  @comments_sorted.find{|comment| comment.id == comment_id}
+end
+
 helpers do
   def image_url(path)
     return nil unless path
@@ -54,23 +65,24 @@ helpers do
     settings.cdn[:hosts].sample + path
   end
 
-  def name_color(gender)
-    case gender
+  def name_span(user)
+    case user.gender
     when 1
-      return '#5a96f0'
+      gender_color = '#5a96f0'
     when 2
-      return '#ff62b8'
+      gender_color = '#ff62b8'
     else
-      return '#cccccc'
+      gender_color = '#cccccc'
     end
+    %Q[<span style="color: #{gender_color}">#{user.nickname}</span>]
   end
 
-  def name_icon(gender)
+  def gender_icon(gender)
     case gender
     when 1
-      return '../images/icon_man.png'
+      %Q[<img class="user_icon" src='../images/icon_man.png'>]
     when 2
-      return '../images/icon_woman.png'
+      %Q[<img class="user_icon" src='../images/icon_woman.png'>]
     end
   end
 
@@ -80,6 +92,11 @@ helpers do
     return (time_ago/1.hours).to_i.to_s + '小时前' if (time_ago/1.hours).to_i > 0
     return (time_ago/1.minutes).to_i.to_s + '分钟前' if (time_ago/1.minutes).to_i > 0
     return '刚刚'
+  end
+
+  def user_avatar(user)
+    source = user.avatar ? image_url(user.avatar) : '../images/default_user_avatar.png'
+    %Q[<img class="image-avatar" src= #{source} >]
   end
 
   def sort_comment(comments)
@@ -95,14 +112,4 @@ helpers do
     @comments_sorted
   end
 
-  def dfs(map, comment)
-    @comments_sorted.push(comment)
-    map[comment.id].each do |reply_comment|
-      dfs(map, reply_comment)
-    end
-  end
-
-  def get_reply_comment(comment_id)
-    @comments_sorted.find{|comment| comment.id == comment_id}
-  end
 end
