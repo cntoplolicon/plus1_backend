@@ -85,7 +85,7 @@ helpers do
   def sort_comment(comments)
     @comments_sorted = Array.new()
     comments.sort_by {|comment| [comment.created_at, comment.id]}
-    comments_map = Hash[comments.map{|c| [c.id, Array.new()]}]
+    comments_map = Hash[comments.map{|comment| [comment.id, Array.new()]}]
     comments.each do |comment|
       comments_map[comment.reply_to_id].push(comment) if comment.reply_to_id
     end
