@@ -5,6 +5,7 @@ require 'sinatra/config_file'
 require 'net/http'
 require 'rabl'
 require 'byebug' if Sinatra::Base.development?
+require './helpers'
 
 set :environments, %w(development test production staging)
 
