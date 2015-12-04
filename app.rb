@@ -83,6 +83,26 @@ helpers do
   end
 
   def sort_comment(comments)
-    return comments
+    @comments_sorted = Array.new()
+    comments.sort_by {|comment| [comment.created_at, comment.id]}
+    comments_map = Hash[comments.map{|c| [c.id, Array.new()]}]
+    comments.each do |comment|
+      comments_map[comment.reply_to_id].push(comment) if comment.reply_to_id
+    end
+    comments.each do |comment|
+      dfs(comments_map, comment) if !comment.reply_to_id
+    end
+    @comments_sorted
+  end
+
+  def dfs(map, comment)
+    @comments_sorted.push(comment)
+    map[comment.id].each do |reply_comment|
+      dfs(map, reply_comment)
+    end
+  end
+
+  def get_reply_comment(comment_id)
+    @comments_sorted.find{|comment| comment.id == comment_id}
   end
 end

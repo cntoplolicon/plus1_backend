@@ -79,6 +79,10 @@
     img[src=""] {
       display: none;
     }
+
+    .reply-comment {
+      padding-left: 30px;
+    }
   </style>
 </head>
 <body>
@@ -114,17 +118,33 @@
   <div class="divding-line"></div>
   <div class="commnet-container">
     <% sort_comment(@post.comments).each do |comment| %>
-    <div>
-      <% if (comment.user.avatar) %>
-      <img class="image-avatar" src="<%= image_url(comment.user.avatar) %>" >
+      <% if(!comment.reply_to_id)%>
+        <div>
+          <% if (comment.user.avatar) %>
+          <img class="image-avatar" src="<%= image_url(comment.user.avatar) %>" >
+          <% else %>
+          <img class="image-avatar" src="../images/default_user_avatar.png">
+          <% end %>
+          <div class="comment-detail">
+            <span style="color: <%= name_color(comment.user.gender) %>"><%= comment.user.nickname %></span>
+            <p class="comment-content"><%= comment.content %></p>
+          </div>
+        </div>
       <% else %>
-      <img class="image-avatar" src="../images/default_user_avatar.png">
+        <div class="reply-comment">
+          <% if (comment.user.avatar) %>
+          <img class="image-avatar" src="<%= image_url(comment.user.avatar) %>" >
+          <% else %>
+          <img class="image-avatar" src="../images/default_user_avatar.png">
+          <% end %>
+          <div class="comment-detail">
+            <span style="color: <%= name_color(comment.user.gender) %>"><%= comment.user.nickname %></span>
+            <span>回复</span>
+            <span style="color: <%= name_color(get_reply_comment(comment.reply_to_id).user.gender) %>"><%= get_reply_comment(comment.reply_to_id).user.nickname %></span>
+            <p class="comment-content"><%= comment.content %></p>
+          </div>
+        </div>
       <% end %>
-    <div class="comment-detail">
-      <span style="color: <%= name_color(@post.user.gender) %>"><%= @post.user.nickname %></span>
-      <p class="comment-content"><%= comment.content %></p>
-    </div>
-    </div>
     <% end %>
   </div>
 </body>
