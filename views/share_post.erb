@@ -119,10 +119,6 @@
     </div>
   </div>
   <div class="divding-line"></div>
-  <div class="commnet-container">
-    <% sort_comment(@post.comments).each do |comment| %>
-      <%= comment_div(comment) %>
-    <% end %>
-  </div>
+  <%= comments_list(@post.comments) %>
 </body>
 </html>
