@@ -47,22 +47,16 @@ get '/app_release/android' do
   end
 end
 
-def dfs(map, comment)
-  @comments_sorted.push(comment)
-  map[comment.id].each do |reply_comment|
-    dfs(map, reply_comment)
-  end
-end
-
-def get_reply_comment(comment_id)
-  @comments_sorted.find{|comment| comment.id == comment_id}
-end
-
 helpers do
   def image_url(path)
     return nil unless path
     return path if path.start_with?('http')
     settings.cdn[:hosts].sample + path
+  end
+
+  def user_avatar(user)
+    source = user.avatar ? image_url(user.avatar) : '../images/default_user_avatar.png'
+    %Q[<img class="image-avatar" src= #{source} >]
   end
 
   def name_span(user)
@@ -94,9 +88,11 @@ helpers do
     return '刚刚'
   end
 
-  def user_avatar(user)
-    source = user.avatar ? image_url(user.avatar) : '../images/default_user_avatar.png'
-    %Q[<img class="image-avatar" src= #{source} >]
+  def dfs(map, comment)
+    @comments_sorted.push(comment)
+    map[comment.id].each do |reply_comment|
+      dfs(map, reply_comment)
+    end
   end
 
   def sort_comment(comments)
@@ -110,6 +106,28 @@ helpers do
       dfs(comments_map, comment) if !comment.reply_to_id
     end
     @comments_sorted
+  end
+
+  def comment_div(comment)
+    if !comment.reply_to_id
+     %Q[<div>
+          #{user_avatar(comment.user)}
+          <div class="comment-detail">
+            #{name_span(comment.user)}
+            <p class="comment-content">#{comment.content}</p>
+          </div>
+        </div>]
+   else
+     %Q[<div class="reply-comment">
+          #{user_avatar(comment.user)}
+          <div class="comment-detail">
+            #{name_span(comment.user)}
+            <span>回复</span>
+            #{name_span(@comments_sorted.find{|target| target.id == comment.reply_to_id}.user)}
+            <p class="comment-content">#{comment.content}</p>
+          </div>
+        </div>]
+   end
   end
 
 end
